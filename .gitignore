@@ -131,3 +131,6 @@ cython_debug/
 
 # VSCode files
 .vscode/
+
+# task data
+resourses/
