@@ -47,7 +47,7 @@
               junitxml-path: ./pytest.xml
           # add content to GitHub summary
           - name: Pytest coverage Github summary
-            if: ${{ success() && github.event_name == 'pull_request' }}
+            if: ${{ success()}}
             run: |
               set -o pipefail
               echo '# Coverage report :rocket:' >> $GITHUB_STEP_SUMMARY
