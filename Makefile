@@ -38,7 +38,7 @@ lint-mypy: ## run mypy (static-type checker)
 lint-mypy-report: # run mypy & create report
 	@mypy --config-file pyproject.toml . --html-report ./mypy_html
 
-lint: lint-black lint-isort lint-flake8 ## run all linters without mypy
+lint: lint-black lint-isort lint-flake8 lint-mypy
 
 ##@ Testing
 
