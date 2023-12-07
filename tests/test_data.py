@@ -62,19 +62,6 @@ def test_read_annotations(annotation: str) -> None:
     assert annotations == mock_data
 
 
-def generate_test_frame(width: int, height: int) -> np.ndarray:
-    """Test frame generation.
-
-    Args:
-        width (int): Width of generated frame.
-        height (int): Height of generated frame.
-
-    Returns:
-        np.ndarray: Generated frame
-    """
-    return np.full((height, width, 3), 255, dtype=np.uint8)
-
-
 @pytest.fixture
 def mock_frame() -> np.ndarray:
     # Create a mock image (a white image with a black polygon)
