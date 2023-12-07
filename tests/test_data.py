@@ -1,8 +1,10 @@
+import json
 from typing import List
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, mock_open, patch
 
 import cv2
 import numpy as np
+import pytest
 
 from object_detection_task.data import preprocess_video
 
@@ -40,3 +42,21 @@ def test_extract_frames() -> None:
 
     # Assert that cv2.VideoCapture was called with the fake path
     patched_capture.assert_called_with("fake_path")
+
+
+@pytest.mark.parametrize("annotation", ["polygons", "intervals"])
+def test_read_annotations(annotation: str) -> None:
+    if annotation == "polygons":
+        mock_data = {
+            "video_0.mp4": [[536, 573], [873, 562], [824, 422]],
+            "video_1.mp4": [[1, 2], [3, 4], [5, 6], [7, 100]],
+        }
+    else:
+        mock_data = {
+            "video_0.mp4": [],
+            "video_1.mp4": [[1, 2], [3, 4]],
+        }
+    mock_json = json.dumps(mock_data)
+    with patch("builtins.open", mock_open(read_data=mock_json)):
+        annotations = preprocess_video.read_annotations("dummy_path.json")
+    assert annotations == mock_data
