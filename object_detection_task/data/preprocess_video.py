@@ -42,3 +42,39 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
     with open(annotation_path, "r") as file:
         annotations = json.load(file)
     return annotations
+
+
+def crop_polygon_from_frame(
+    frame: np.ndarray, polygon: List[List[int]], same_size: bool = False
+) -> np.ndarray:
+    """Crops a polygon region from a given frame and optionally
+        returns it within the bounds of the original frame size.
+
+    Args:
+        frame (np.ndarray): Frame from which polygon will be cropped.
+        polygon (List[List[int]]): A list of [x, y] coordinates that define polygon.
+        same_size (bool, optional): Whether to return the cropped region with
+            the same dimensions as the original frame. Defaults to False.
+
+    Returns:
+        np.ndarray: The cropped region of the frame, either as a masked image with
+            the same size as the original frame or as the smallest bounding rectangle
+            around the polygon.
+    """
+    mask = np.zeros(frame.shape[:2], dtype=np.uint8)
+    points = np.array(polygon)
+
+    # Fill the polygon on the mask
+    cv2.fillPoly(mask, pts=[points], color=(255, 255, 255))
+
+    # Apply the mask to the frame
+    result = cv2.bitwise_and(frame, frame, mask=mask)
+    if same_size:
+        return result
+
+    # Find the bounding rectangle of the polygon
+    bound = cv2.boundingRect(points)  # returns (x, y, w, h) of the rect
+
+    # Crop the frame to the bounding rectangle
+    cropped = result[bound[1] : bound[1] + bound[3], bound[0] : bound[0] + bound[2]]
+    return cropped

@@ -60,3 +60,47 @@ def test_read_annotations(annotation: str) -> None:
     with patch("builtins.open", mock_open(read_data=mock_json)):
         annotations = preprocess_video.read_annotations("dummy_path.json")
     assert annotations == mock_data
+
+
+@pytest.fixture
+def mock_frame() -> np.ndarray:
+    # Create a mock image (a white image with a black polygon)
+    image_height = 100
+    image_width = 100
+    image = np.ones((image_height, image_width, 3), dtype=np.uint8) * 255  # White image
+    polygon = np.array([[10, 10], [10, 50], [50, 50], [50, 10]])
+    cv2.fillPoly(image, [polygon], (0, 0, 0))  # Fill the polygon with black
+    return image
+
+
+@pytest.mark.parametrize("same_size", [True, False])
+def test_crop_rectangle_polygon(mock_frame: np.ndarray, same_size: bool) -> None:
+    # mock_frame is not black
+    assert not np.array_equal(mock_frame, np.zeros_like(mock_frame))
+    polygon = [[10, 10], [10, 50], [50, 50], [50, 10]]
+    cropped = preprocess_video.crop_polygon_from_frame(
+        mock_frame, polygon, same_size=same_size
+    )
+
+    # Checking the size of the cropped image
+    if same_size:
+        assert cropped.shape == mock_frame.shape
+        assert np.array_equal(cropped, np.zeros_like(mock_frame))
+    else:
+        assert cropped.shape == (41, 41, 3)
+
+
+@pytest.mark.parametrize("same_size", [True, False])
+def test_crop_irregular_polygon(mock_frame: np.ndarray, same_size: bool) -> None:
+    polygon = [[10, 10], [20, 80], [30, 50], [80, 20]]
+    cropped = preprocess_video.crop_polygon_from_frame(
+        mock_frame, polygon, same_size=same_size
+    )
+
+    # Checking the size of the cropped image
+    if same_size:
+        assert cropped.shape == mock_frame.shape
+    else:
+        expected_height = 80 - 10 + 1
+        expected_width = 80 - 10 + 1
+        assert cropped.shape == (expected_height, expected_width, 3)
