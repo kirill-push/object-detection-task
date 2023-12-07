@@ -79,7 +79,7 @@ def test_label_frames_empty() -> None:
 @pytest.mark.parametrize("is_car", [True, False])
 def test_label_frames(is_car: bool) -> None:
     """
-    Test label_frames function with frames and with two options:
+    Test label_frames function with two options:
     with and without car in any frame.
     """
     frames = [np.zeros((100, 100, 3), dtype=np.uint8) for _ in range(10)]
