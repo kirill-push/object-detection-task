@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import cv2
 import numpy as np
@@ -42,6 +42,34 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
     with open(annotation_path, "r") as file:
         annotations = json.load(file)
     return annotations
+
+
+def label_frames(
+    frames: List[np.ndarray], annotations: Dict[str, List[List[int]]], video_name: str
+) -> List[Tuple[np.ndarray, int]]:
+    """Labels each frame based on the presence of a car within the annotated intervals.
+
+    Args:
+        frames (List[np.ndarray]): A list of frames from a video.
+        annotations (Dict[str, List[List[int]]]): A dictionary containing intervals
+            for each video where a car is present.
+        video_name (str): The name of the video for which frames are being labeled.
+
+    Returns:
+        List[Tuple[np.ndarray, int]]: A list of tuples where each tuple contains a
+            frame and its corresponding label (1 for car present, 0 for no car).
+    """
+    if video_name not in annotations:
+        raise ValueError("Wrong video name, check annotations")
+    labeled_frames = []
+    for i, frame in enumerate(frames):
+        label = 0  # Default label (no car)
+        for interval in annotations[video_name]:
+            if interval[0] <= i <= interval[1]:
+                label = 1  # Car is present
+                break
+        labeled_frames.append((frame, label))
+    return labeled_frames
 
 
 def crop_polygon_from_frame(
