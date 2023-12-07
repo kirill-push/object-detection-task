@@ -48,11 +48,11 @@ unit-tests: ## run unit-tests
 
 .PHONY: unit-tests-cov
 unit-tests-cov: ## run unit-tests with coverage
-	@pytest --cov=src --cov-report term-missing --cov-report=html
+	@pytest --cov=object_detection_task --cov-report term-missing --cov-report=html
 
 .PHONY: unit-tests-cov-fail
 unit-tests-cov-fail: ## run unit-tests with coverage and cov-fail level
-	@pytest --cov=src --cov-report term-missing --cov-report=xml --cov-fail-under=50 --junitxml=pytest.xml | tee pytest-coverage.txt
+	@pytest --cov=object_detection_task --cov-report term-missing --cov-report=xml --cov-fail-under=50 --junitxml=pytest.xml | tee pytest-coverage.txt
 
 ##@ Clean-up
 
