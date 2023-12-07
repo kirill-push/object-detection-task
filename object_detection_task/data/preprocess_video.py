@@ -59,6 +59,8 @@ def label_frames(
         List[Tuple[np.ndarray, int]]: A list of tuples where each tuple contains a
             frame and its corresponding label (1 for car present, 0 for no car).
     """
+    if video_name not in annotations:
+        raise ValueError("Wrong video name, check annotations")
     labeled_frames = []
     for i, frame in enumerate(frames):
         label = 0  # Default label (no car)
