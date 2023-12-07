@@ -52,8 +52,7 @@ unit-tests-cov: ## run unit-tests with coverage
 
 .PHONY: unit-tests-cov-fail
 unit-tests-cov-fail: ## run unit-tests with coverage and cov-fail level
-	@pytest --cov=object_detection_task --cov-report term-missing --cov-report=xml --cov-fail-under=50 --junitxml=pytest.xml | tee pytest-coverage.txt
-
+	@pytest --cov=object_detection_task --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
 ##@ Clean-up
 
 clean-cov: ## run cleaning from reports
