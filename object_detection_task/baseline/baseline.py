@@ -1,5 +1,6 @@
 from typing import Dict, Tuple
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from object_detection_task.data.preprocess_video import (
@@ -115,3 +116,40 @@ def normalize_frame_dispersion(
     }
 
     return normalized_dict
+
+
+def visualize_variance_data(variance_dict: Dict[int, Tuple[float, int]]) -> None:
+    """Visualize variances distribution for each label using histograms and box plots.
+
+    Args:
+    variance_dict (dict): A dictionary where keys are frame numbers and values are
+        tuples of normalized variance values and labels.
+    """
+
+    # Separating the variance values based on labels
+    variance_label_0 = [
+        value[0] for value in variance_dict.values() if value[1] == 0
+    ]
+    variance_label_1 = [
+        value[0] for value in variance_dict.values() if value[1] == 1
+    ]
+
+    # Creating histograms for each label
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(1, 2, 1)
+    plt.hist(variance_label_0, bins=20, alpha=0.5, label="Label 0")
+    plt.hist(variance_label_1, bins=20, alpha=0.5, label="Label 1")
+    plt.title("Histogram of variance Values")
+    plt.xlabel("variance Value")
+    plt.ylabel("Frequency")
+    plt.legend()
+
+    # Creating box plots for each label
+    plt.subplot(1, 2, 2)
+    plt.boxplot([variance_label_0, variance_label_1], labels=["Label 0", "Label 1"])
+    plt.title("Box Plot of variance Values")
+    plt.ylabel("variance Value")
+
+    plt.tight_layout()
+    plt.show()
