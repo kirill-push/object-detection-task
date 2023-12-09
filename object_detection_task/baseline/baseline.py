@@ -84,35 +84,35 @@ def analyze_video_brightness_variance(
     return variance_dict
 
 
-def normalize_frame_dispersion(
-    dispersion_dict: Dict[int, Tuple[float, int]]
+def normalize_frame_variance(
+    variance_dict: Dict[int, Tuple[float, int]]
 ) -> Dict[int, Tuple[float, int]]:
-    """Normalize dispersion values of video frames using z-score normalization,
+    """Normalize variance values of video frames using z-score normalization,
         keeping the labels unchanged.
 
     Args:
-    dispersion_dict (dict): A dictionary where keys are frame numbers and values are
-        tuples of the dispersion values and labels.
+    variance_dict (dict): A dictionary where keys are frame numbers and values are
+        tuples of the variance values and labels.
 
     Returns:
-    Dict[int, Tuple[float, int]]: A dictionary with normalized dispersion values and
+    Dict[int, Tuple[float, int]]: A dictionary with normalized variance values and
         unchanged labels, where keys are frame numbers.
     """
 
-    # Extract dispersion values from the dictionary
-    dispersion_values = np.array([value[0] for value in dispersion_dict.values()])
+    # Extract variance values from the dictionary
+    variance_values = np.array([value[0] for value in variance_dict.values()])
 
-    # Calculate the mean (mu) and standard deviation (sigma) of the dispersion values
-    mu = np.mean(dispersion_values)
-    sigma = np.std(dispersion_values)
+    # Calculate the mean (mu) and standard deviation (sigma) of the variance values
+    mu = np.mean(variance_values)
+    sigma = np.std(variance_values)
 
-    # Normalize the dispersion values using z-score formula: (x - mu) / sigma
-    normalized_dispersion = (dispersion_values - mu) / sigma
+    # Normalize the variance values using z-score formula: (x - mu) / sigma
+    normalized_variance = (variance_values - mu) / sigma
 
     # Reconstruct the dictionary with normalized values and unchanged labels
     normalized_dict = {
-        key: (normalized_value, dispersion_dict[key][1])
-        for key, normalized_value in zip(dispersion_dict.keys(), normalized_dispersion)
+        key: (normalized_value, variance_dict[key][1])
+        for key, normalized_value in zip(variance_dict.keys(), normalized_variance)
     }
 
     return normalized_dict
