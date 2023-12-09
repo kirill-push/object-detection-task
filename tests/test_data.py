@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Tuple
 from unittest.mock import MagicMock, mock_open, patch
 
 import cv2
@@ -69,11 +69,8 @@ def test_label_frames_empty() -> None:
     frames = []  # type: ignore # [no need in test]
     annotations = {}  # type: ignore # [no need in test]
     video_name = "test_video"
-    expected_output = []  # type: ignore # [no need in test]
-    assert (
+    with pytest.raises(ValueError, match="Wrong video name, check annotations"):
         preprocess_video.label_frames(frames, annotations, video_name)
-        == expected_output
-    )
 
 
 @pytest.mark.parametrize("is_car", [True, False])
@@ -121,19 +118,29 @@ def mock_frame() -> np.ndarray:
     return image
 
 
+@pytest.mark.parametrize("min_square", [True, False])
+@pytest.mark.parametrize("bg_color_id", [(0, 0, 0), (255, 255, 255)])
 @pytest.mark.parametrize("same_size", [True, False])
-def test_crop_rectangle_polygon(mock_frame: np.ndarray, same_size: bool) -> None:
+def test_crop_rectangle_polygon(
+    mock_frame: np.ndarray,
+    min_square: bool,
+    bg_color_id: Tuple[int, int, int],
+    same_size: bool,
+) -> None:
     # mock_frame is not black
     assert not np.array_equal(mock_frame, np.zeros_like(mock_frame))
     polygon = [[10, 10], [10, 50], [50, 50], [50, 10]]
     cropped = preprocess_video.crop_polygon_from_frame(
-        mock_frame, polygon, same_size=same_size
+        mock_frame,
+        polygon,
+        same_size=same_size,
+        bg_color_id=bg_color_id,
+        min_square=min_square,
     )
 
     # Checking the size of the cropped image
     if same_size:
         assert cropped.shape == mock_frame.shape
-        assert np.array_equal(cropped, np.zeros_like(mock_frame))
     else:
         assert cropped.shape == (41, 41, 3)
 
