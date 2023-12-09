@@ -18,3 +18,17 @@ def calculate_brightness(frame: np.ndarray) -> np.ndarray:
     # Calculating the brightness for each pixel
     brightness = np.sum(normalized_frame**2, axis=2) / 3
     return brightness
+
+
+def calculate_brightness_variance(cropped_frame: np.ndarray) -> float:
+    """Calculates the variance of brightness in a cropped frame.
+
+    Args:
+        cropped_frame (np.ndarray): The cropped region of the frame.
+
+    Returns:
+        float: The variance of the brightness in the cropped frame.
+    """
+    brightness = calculate_brightness(cropped_frame)
+    variance = np.var(brightness)
+    return variance  # type: ignore
