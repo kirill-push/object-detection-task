@@ -1,5 +1,6 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
+import numpy as np
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
@@ -70,3 +71,40 @@ def predict_car_presence_with_metrics(
     }
 
     return metrics, car_intervals
+
+
+def find_best_threshold(
+    variance_dict: Dict[int, Tuple[float, int]],
+    threshold_range: Optional[np.ndarray] = None,
+) -> float:
+    """Find the best threshold for car presence prediction based on F1-score.
+
+    Args:
+    variance_dict (dict): Dictionary with frame numbers as keys and
+        tuples of variance values and original labels as values.
+    threshold_range (np.ndarray | None): Thresholds list to evaluate.
+        If None - using np.linspace(min_variance, max_variance, 100).
+        Defaults to None.
+
+    Returns:
+    float: The threshold value with the highest F1-score.
+    """
+
+    # Extracting variance values and finding the min and max
+    variances = [variance for variance, _ in variance_dict.values()]
+    min_variance = min(variances)
+    max_variance = max(variances)
+
+    # Generating a range of threshold values
+    threshold_range = np.linspace(min_variance, max_variance, num=100, dtype=float)
+    best_threshold = None
+    best_f1_score = 0.0
+
+    for threshold in threshold_range:
+        metrics, _ = predict_car_presence_with_metrics(variance_dict, threshold)
+        f1_score = metrics["f1_score"]
+        if f1_score > best_f1_score:
+            best_f1_score = f1_score
+            best_threshold = threshold
+
+    return best_threshold  # type: ignore
