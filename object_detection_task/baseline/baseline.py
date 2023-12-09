@@ -1,4 +1,5 @@
-from typing import Dict, Tuple
+import os
+from typing import Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -149,3 +150,51 @@ def visualize_variance_data(variance_dict: Dict[int, Tuple[float, int]]) -> None
 
     plt.tight_layout()
     plt.show()
+
+
+def process_all_videos(
+    path_to_video_dir: str,
+    file_path_intervals: str,
+    file_path_polygons: str,
+    video_list: Optional[List[str]] = None,
+    min_square: bool = True,
+) -> Dict[Tuple[str, int], Tuple[float, int]]:
+    """Process all videos in the list to calculate brightness variances,
+        label them, and visualize the combined variance data.
+
+    Args:
+        path_to_video_dir (str): The video dir path.
+        file_path_intervals (str): The file path for interval annotations.
+        file_path_polygons (str): The file path for polygon annotations.
+        video_list (List[str] | None): A list of video names.
+            Defaults to None.
+        min_square (bool, optional): Flag to determine cropping method.
+            Defaults to True.
+
+    Returns:
+        Dict[Tuple[str, int], Tuple[float, int]]: Dictionary with combined data from all
+            videos from video_list (if videos_list is None, than from all videos) with:
+                key: (video name, frame number);
+                value: (frame normalized variance, label).
+    """
+
+    combined_normalized_variance_dict = {}
+    if video_list is None:
+        video_list = list(read_annotations(file_path_polygons).keys())
+    for video_name in video_list:
+        video_path = os.path.join(path_to_video_dir, video_name)
+        variance_dict = analyze_video_brightness_variance(
+            video_path,
+            file_path_intervals,
+            file_path_polygons,
+            min_square,
+        )
+
+        # Normalize the variance for the current video
+        normalized_variance_dict = normalize_frame_variance(variance_dict)
+
+        # Combine the normalized data from all videos
+        for key, value in normalized_variance_dict.items():
+            combined_normalized_variance_dict[(video_name, key)] = value
+
+    return combined_normalized_variance_dict
