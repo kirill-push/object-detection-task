@@ -78,9 +78,12 @@ def crop_polygon_from_frame(
     same_size: bool = False,
     bg_color_id: Tuple[int, int, int] = (0, 0, 0),
     min_square: bool = False,
+    up: int = 0,
+    down: int = 0,
+    right: int = 0,
+    left: int = 0,
 ) -> np.ndarray:
-    """Crops a polygon region from a given frame and optionally
-        returns it within the bounds of the original frame size.
+    """Crops a polygon region from a given frame with additional padding.
 
     Args:
         frame (np.ndarray): Frame from which polygon will be cropped.
@@ -89,13 +92,15 @@ def crop_polygon_from_frame(
             the same dimensions as the original frame. Defaults to False.
         bg_color_id (Tuple[int, int, int], optional): Which color will be on background.
             Defaults to (0, 0, 0).
-        min_square (bool, optional): If True - return croped frame in minimal square.
+        min_square (bool, optional): If True - return cropped frame in minimal square.
             Defaults to False.
+        up (int, optional): Padding on top. Defaults to 0.
+        down (int, optional): Padding at bottom. Defaults to 0.
+        right (int, optional): Padding on right. Defaults to 0.
+        left (int, optional): Padding on left. Defaults to 0.
 
     Returns:
-        np.ndarray: The cropped region of the frame, either as a masked image with
-            the same size as the original frame or as the smallest bounding rectangle
-            around the polygon.
+        np.ndarray: The cropped region of the frame with specified paddings.
     """
     mask = np.zeros(frame.shape[:2], dtype=np.uint8)
     points = np.array(polygon)
@@ -118,10 +123,16 @@ def crop_polygon_from_frame(
     if same_size:
         return result
 
-    # Find the bounding rectangle of the polygon
-    bound = cv2.boundingRect(points)  # returns (x, y, w, h) of the rect
+    # Find the bounding rectangle of the polygon and add padding
+    x, y, w, h = cv2.boundingRect(points)
+    x, y = max(0, x - left), max(0, y - up)
+    w, h = min(frame.shape[1] - x, w + right + left), min(
+        frame.shape[0] - y, h + up + down
+    )
+
     if min_square:
-        return frame[bound[1] : bound[1] + bound[3], bound[0] : bound[0] + bound[2]]
-    # Crop the frame to the bounding rectangle
-    cropped = result[bound[1] : bound[1] + bound[3], bound[0] : bound[0] + bound[2]]
+        return frame[y : y + h, x : x + w]
+
+    # Crop the frame to the adjusted bounding rectangle
+    cropped = result[y : y + h, x : x + w]
     return cropped
