@@ -136,3 +136,51 @@ def crop_polygon_from_frame(
     # Crop the frame to the adjusted bounding rectangle
     cropped = result[y : y + h, x : x + w]
     return cropped
+
+
+def prepare_frame_for_detector(
+    frame: np.ndarray,
+    polygon: List[List[int]],
+    target_size: Tuple[int, int] = (640, 640),
+    keep_aspect_ratio: bool = True,
+) -> np.ndarray:
+    """Prepares video frame for detector processing, including scaling and conversion.
+
+    Args:
+        frame (np.ndarray): The original video frame as a numpy array.
+        polygons (List[List[int]]): A list of [x, y] coordinates that define polygon.
+        target_size (Tuple[int, int]): Target frame size for the model.
+            Defaults to (640, 640).
+        keep_aspect_ratio (bool): If True, keeps the aspect ratio while scaling.
+            Defaults to True.
+
+    Returns:
+        np.ndarray: The prepared frame as a numpy array.
+    """
+
+    # Crop the frame to the minimum rectangle enclosing the polygon
+    cropped_frame = crop_polygon_from_frame(frame, polygon, min_square=True)
+
+    if keep_aspect_ratio:
+        # Calculate new dimensions, keeping the aspect ratio
+        h, w = cropped_frame.shape[:2]
+        r = min(target_size[0] / w, target_size[1] / h)
+        new_w = int(w * r)
+        new_h = int(h * r)
+
+        resized_frame = cv2.resize(
+            cropped_frame, (new_w, new_h), interpolation=cv2.INTER_LINEAR
+        )
+
+        # Create a new frame of the desired size and place the resized frame in it
+        new_frame = np.full(
+            (target_size[1], target_size[0], 3), (0, 0, 0), dtype=np.uint8
+        )
+        new_frame[:new_h, :new_w] = resized_frame
+    else:
+        # Simply resize the frame to the desired size
+        new_frame = cv2.resize(
+            cropped_frame, target_size, interpolation=cv2.INTER_LINEAR
+        )
+
+    return new_frame
