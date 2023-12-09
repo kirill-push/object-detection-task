@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 opencv-python = "^4.8.1.78"
+torch = "^1.8"
 
 
 [tool.poetry.group.lint.dependencies]
@@ -16,6 +17,7 @@ isort = "^5.12.0"
 black = "^23.11.0"
 mypy = "^1.7.1"
 flake8 = "^5"
+lxml = "^4.9.3"
 
 
 [tool.poetry.group.test.dependencies]
