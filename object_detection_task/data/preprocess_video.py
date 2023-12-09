@@ -73,7 +73,11 @@ def label_frames(
 
 
 def crop_polygon_from_frame(
-    frame: np.ndarray, polygon: List[List[int]], same_size: bool = False
+    frame: np.ndarray,
+    polygon: List[List[int]],
+    same_size: bool = False,
+    bg_color_id: Tuple[int, int, int] = (0, 0, 0),
+    min_square: bool = False,
 ) -> np.ndarray:
     """Crops a polygon region from a given frame and optionally
         returns it within the bounds of the original frame size.
@@ -83,6 +87,10 @@ def crop_polygon_from_frame(
         polygon (List[List[int]]): A list of [x, y] coordinates that define polygon.
         same_size (bool, optional): Whether to return the cropped region with
             the same dimensions as the original frame. Defaults to False.
+        bg_color_id (Tuple[int, int, int], optional): Which color will be on background.
+            Defaults to (0, 0, 0).
+        min_square (bool, optional): If True - return croped frame in minimal square.
+            Defaults to False.
 
     Returns:
         np.ndarray: The cropped region of the frame, either as a masked image with
@@ -97,12 +105,23 @@ def crop_polygon_from_frame(
 
     # Apply the mask to the frame
     result = cv2.bitwise_and(frame, frame, mask=mask)
+
+    # Change background color
+    if bg_color_id != (0, 0, 0):
+        img2 = np.full(
+            (result.shape[0], result.shape[1], 3), bg_color_id, dtype=np.uint8
+        )
+        mask_inv = cv2.bitwise_not(mask)
+        color_crop = cv2.bitwise_or(img2, img2, mask=mask_inv)
+        result = result + color_crop  # type: ignore
+
     if same_size:
         return result
 
     # Find the bounding rectangle of the polygon
     bound = cv2.boundingRect(points)  # returns (x, y, w, h) of the rect
-
+    if min_square:
+        return frame[bound[1] : bound[1] + bound[3], bound[0] : bound[0] + bound[2]]
     # Crop the frame to the bounding rectangle
     cropped = result[bound[1] : bound[1] + bound[3], bound[0] : bound[0] + bound[2]]
     return cropped
