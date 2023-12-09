@@ -127,12 +127,8 @@ def visualize_variance_data(variance_dict: Dict[int, Tuple[float, int]]) -> None
     """
 
     # Separating the variance values based on labels
-    variance_label_0 = [
-        value[0] for value in variance_dict.values() if value[1] == 0
-    ]
-    variance_label_1 = [
-        value[0] for value in variance_dict.values() if value[1] == 1
-    ]
+    variance_label_0 = [value[0] for value in variance_dict.values() if value[1] == 0]
+    variance_label_1 = [value[0] for value in variance_dict.values() if value[1] == 1]
 
     # Creating histograms for each label
     plt.figure(figsize=(12, 6))
