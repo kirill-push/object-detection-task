@@ -143,6 +143,10 @@ def prepare_frame_for_detector(
     polygon: List[List[int]],
     target_size: Tuple[int, int] = (640, 640),
     keep_aspect_ratio: bool = True,
+    up: int = 0,
+    down: int = 0,
+    right: int = 0,
+    left: int = 0,
 ) -> np.ndarray:
     """Prepares video frame for detector processing, including scaling and conversion.
 
@@ -153,13 +157,25 @@ def prepare_frame_for_detector(
             Defaults to (640, 640).
         keep_aspect_ratio (bool): If True, keeps the aspect ratio while scaling.
             Defaults to True.
+        up (int, optional): Padding on top. Defaults to 0.
+        down (int, optional): Padding at bottom. Defaults to 0.
+        right (int, optional): Padding on right. Defaults to 0.
+        left (int, optional): Padding on left. Defaults to 0.
 
     Returns:
         np.ndarray: The prepared frame as a numpy array.
     """
 
     # Crop the frame to the minimum rectangle enclosing the polygon
-    cropped_frame = crop_polygon_from_frame(frame, polygon, min_square=True)
+    cropped_frame = crop_polygon_from_frame(
+        frame,
+        polygon,
+        min_square=True,
+        up=up,
+        down=down,
+        right=right,
+        left=left,
+    )
 
     if keep_aspect_ratio:
         # Calculate new dimensions, keeping the aspect ratio
