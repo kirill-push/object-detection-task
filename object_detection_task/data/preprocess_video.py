@@ -200,3 +200,55 @@ def prepare_frame_for_detector(
         )
 
     return new_frame
+
+
+def recalculate_polygon_coordinates(
+    original_polygon: List[List[int]],
+    original_frame_size: Tuple[int, int],
+    target_size: Tuple[int, int] = (640, 640),
+    keep_aspect_ratio: bool = True,
+    up: int = 0,
+    down: int = 0,
+    right: int = 0,
+    left: int = 0,
+) -> List[List[int]]:
+    """Recalculates coordinates of a polygon after frame has been cropped and resized.
+
+    Args:
+        original_polygon (List[List[int]]): Original polygon coordinates [[x, y], ...].
+        original_frame_size (Tuple[int, int]): Original size of frame before cropping.
+        target_size (Tuple[int, int]): Target size of frame after resizing.
+        keep_aspect_ratio (bool): If True, keeps the aspect ratio while resizing.
+        up (int, optional): Padding on top. Defaults to 0.
+        down (int, optional): Padding at bottom. Defaults to 0.
+        right (int, optional): Padding on right. Defaults to 0.
+        left (int, optional): Padding on left. Defaults to 0.
+
+    Returns:
+        List[List[int]]: The recalculated polygon coordinates.
+    """
+    # Find the bounding rectangle of the polygon
+    points = np.array(original_polygon)
+    x0, y0, w0, h0 = cv2.boundingRect(points)
+    x0, y0 = max(0, x0 - left), max(0, y0 - up)
+    w, h = min(original_frame_size[1] - x0, w0 + right + left), min(
+        original_frame_size[0] - y0, h0 + up + down
+    )
+
+    # Recalculate coordinates to be relative to the bounding rectangle
+    new_polygon = [[x - x0, y - y0] for [x, y] in original_polygon]
+    # Calculate the scale factors
+    if keep_aspect_ratio:
+        r = min(target_size[0] / w, target_size[1] / h)
+        scale = (r, r)
+    else:
+        scale = (target_size[0] / w, target_size[1] / h)
+
+    # Recalculate polygon coordinates
+    recalculated_polygon = []
+    for point in new_polygon:
+        new_x = int(point[0] * scale[0])
+        new_y = int(point[1] * scale[1])
+        recalculated_polygon.append([new_x, new_y])
+
+    return recalculated_polygon
