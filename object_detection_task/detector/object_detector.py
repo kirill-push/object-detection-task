@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 import torch
+from shapely.geometry import Polygon, box
 from torch import nn
 
 
@@ -67,3 +68,51 @@ def detect_objects(
             one_detection_dict["label"] = label
         detections.append(one_detection_dict)
     return detections
+
+
+def check_intersection(
+    detections: List[Dict[str, Union[int, float]]], polygon: List[List[int]]
+) -> List[Dict[str, Union[int, float]]]:
+    """Determines whether a detected objects intersect with a given polygon and
+        calculates metrics.
+
+    Args:
+        detections (List[Dict[str, Union[int, float]]]): List with dictionaries
+            containing detection information with keys 'x_min', 'y_min', 'x_max',
+            'y_max', 'confidence' and 'class_id' for one frame.
+        polygon (List[List[int]]): List of [x, y] coordinates representing the polygon.
+
+    Returns:
+        List[Dict[str, Union[int, float]]]: List with dictionaries containing
+            information about detection and intersections metrics.
+    """
+    # Create a polygon object from the list of points
+    poly = Polygon(polygon)
+    result_detections = detections.copy()
+    list_to_del = []
+    for i, detection in enumerate(result_detections):
+        # Create a rectangular polygon from the detection coordinates
+        bbox = box(
+            detection["x_min"],
+            detection["y_min"],
+            detection["x_max"],
+            detection["y_max"],
+        )
+        detection["intersect"] = poly.intersects(bbox)
+
+        # Calculate the intersection of the detection and the polygon
+        intersection = poly.intersection(bbox)
+        if detection["intersect"]:
+            # Calculate metrics
+            detection["intersection_area"] = intersection.area
+            detection["proportion_of_intersection"] = (
+                detection["intersection_area"] / bbox.area
+            )
+        else:
+            # Add to list number of object without intersection
+            list_to_del.append(i)
+    # Delete object dict without intersection to Polygon
+    for i in list_to_del[::-1]:
+        result_detections.pop(i)
+
+    return result_detections
