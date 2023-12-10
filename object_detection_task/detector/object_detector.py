@@ -1,3 +1,6 @@
+from typing import Dict, List, Optional, Union
+
+import numpy as np
 import torch
 from torch import nn
 
@@ -24,3 +27,43 @@ def load_pretrained_yolov5(model_name: str = "yolov5s") -> nn.Module:
     model = torch.hub.load(github_repo_url, model_name, pretrained=True)  # type: ignore
 
     return model.eval().to(device)
+
+
+def detect_objects(
+    frame: np.ndarray,
+    model: nn.Module,
+    label: Optional[int] = None,
+) -> List[Dict[str, Union[int, float]]]:
+    """Detects objects in a given frame using a preloaded YOLOv5 model.
+
+    Args:
+        frame (np.ndarray): The prepared frame for object detection.
+        model (torch.nn.Module): The preloaded YOLOv5 model.
+        label (int | None): If label is not None, than write label to detection dict.
+            Defaults to None.
+
+    Returns:
+        List[Dict[str, Union[int, float]]]: A list of detected objects, each object is
+            a dictionary containing coordinates ('x_min', 'y_min', 'x_max', 'y_max'),
+            confidence score, and detected object class_id. Also dictionary contains
+            label if label is not None.
+    """
+
+    # Perform detection
+    results = model(frame)
+    # Process results
+    detections = []
+    for detection in results.xyxy[0].cpu().numpy():
+        x_min, y_min, x_max, y_max, confidence, class_id = detection[:6]
+        one_detection_dict = {
+            "x_min": int(x_min),
+            "y_min": int(y_min),
+            "x_max": int(x_max),
+            "y_max": int(y_max),
+            "confidence": float(confidence),
+            "class_id": int(class_id),
+        }
+        if label is not None:
+            one_detection_dict["label"] = label
+        detections.append(one_detection_dict)
+    return detections
