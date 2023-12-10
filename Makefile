@@ -35,7 +35,7 @@ lint-mypy: ## run mypy (static-type checker)
 	@mypy --config-file pyproject.toml .
 
 .PHONY: lint-mypy-report
-lint-mypy-report: # run mypy & create report
+lint-mypy-report: ## run mypy & create report
 	@mypy --config-file pyproject.toml . --html-report ./mypy_html
 
 lint: lint-black lint-isort lint-flake8 lint-mypy
@@ -61,6 +61,7 @@ clean-cov: ## run cleaning from reports
 	@rm -rf pytest.xml
 	@rm -rf pytest-coverage.txt
 	@rm -rf coverage.xml
+	@rm -rf mypy_html
 
 clean-docs: ## remove output files from mkdocs
 	@rm -rf site

@@ -71,8 +71,9 @@ def analyze_video_brightness_variance(
     intervals_annotations = read_annotations(file_path_intervals)
     polygon_annotations = read_annotations(file_path_polygons)
     polygon = polygon_annotations[video_name]
+    intervals = intervals_annotations[video_name]
 
-    labeled_frames = label_frames(frames, intervals_annotations, video_name)
+    labeled_frames = label_frames(frames, intervals)
     variance_dict = {}
 
     # Loop through each frame, crop it using the polygon,

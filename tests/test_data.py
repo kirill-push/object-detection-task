@@ -62,17 +62,6 @@ def test_read_annotations(annotation: str) -> None:
     assert annotations == mock_data
 
 
-def test_label_frames_empty() -> None:
-    """
-    Test label_frames function with no frames and empty annotations.
-    """
-    frames = []  # type: ignore # [no need in test]
-    annotations = {}  # type: ignore # [no need in test]
-    video_name = "test_video"
-    with pytest.raises(ValueError, match="Wrong video name, check annotations"):
-        preprocess_video.label_frames(frames, annotations, video_name)
-
-
 @pytest.mark.parametrize("is_car", [True, False])
 def test_label_frames(is_car: bool) -> None:
     """
@@ -81,30 +70,14 @@ def test_label_frames(is_car: bool) -> None:
     """
     frames = [np.zeros((100, 100, 3), dtype=np.uint8) for _ in range(10)]
     if is_car:
-        annotations = {"test_video": [[2, 4], [7, 9]]}
+        intervals = [[2, 4], [7, 9]]
         expected_output = [
             (frames[i], 1 if 2 <= i <= 4 or 7 <= i <= 9 else 0) for i in range(10)
         ]
     else:
-        annotations = {"test_video": []}
+        intervals = []
         expected_output = [(frame, 0) for frame in frames]
-    video_name = "test_video"
-    assert (
-        preprocess_video.label_frames(frames, annotations, video_name)
-        == expected_output
-    )
-
-
-def test_label_frames_invalid_video_name() -> None:
-    """
-    Test label_frames function with a non-existent video name in annotations.
-    """
-    frames = [np.zeros((100, 100, 3), dtype=np.uint8) for _ in range(10)]
-    annotations = {"other_video": [[1, 3]]}
-    video_name = "test_video"
-
-    with pytest.raises(ValueError, match="Wrong video name, check annotations"):
-        preprocess_video.label_frames(frames, annotations, video_name)
+    assert preprocess_video.label_frames(frames, intervals) == expected_output
 
 
 @pytest.fixture
