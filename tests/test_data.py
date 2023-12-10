@@ -77,10 +77,7 @@ def test_label_frames(is_car: bool) -> None:
     else:
         intervals = []
         expected_output = [(frame, 0) for frame in frames]
-    assert (
-        preprocess_video.label_frames(frames, intervals)
-        == expected_output
-    )
+    assert preprocess_video.label_frames(frames, intervals) == expected_output
 
 
 @pytest.fixture

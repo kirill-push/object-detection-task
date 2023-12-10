@@ -11,7 +11,6 @@ from object_detection_task.data.preprocess_video import (
     extract_frames,
     label_frames,
     prepare_frame_for_detector,
-    read_annotations,
     recalculate_polygon_coordinates,
 )
 
@@ -31,11 +30,13 @@ def load_pretrained_yolov5(model_name: str = "yolov5s") -> nn.Module:
     # Check if GPU is available and set the device accordingly
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # URL for the YOLOv5 GitHub repository
-    github_repo_url = "ultralytics/yolov5"
-
     # Load the pretrained model from the official YOLOv5 repository
-    model = torch.hub.load(github_repo_url, model_name, pretrained=True)  # type: ignore
+    model = torch.hub.load(
+        "ultralytics/yolov5",
+        model_name,
+        force_reload=True,
+        _verbose=False,
+    )  # type: ignore
 
     return model.eval().to(device)
 
@@ -132,8 +133,8 @@ def process_one_video_frames(
     model: torch.nn.Module,
     video_name: str,
     video_dir_path: str,
-    file_path_polygons: str,
-    file_path_intervals: str,
+    polygon: List[List[int]],
+    intervals: List[List[int]],
 ) -> Dict[int, List[Dict[str, Union[int, float]]]]:
     """Processes all frames of one video, detecting objects and calculating
         intersections with a polygon.
@@ -142,8 +143,8 @@ def process_one_video_frames(
         model (torch.nn.Module): Loaded YOLOv5 model for object detection.
         video_name (str): Name of video.
         video_dir_path (str): Path to directory with videos.
-        file_path_polygons (str): Path to polygons json file.
-        file_path_intervals (str): Path to intervals json file.
+        polygon (List[List[int]]): Polygon for video_name.
+        intervals (List[List[int]]): Intervals for video_name.
 
     Returns:
         Dict[int, List[Dict[str, Union[int, float]]]]: A dictionary with n_frame as key
@@ -158,20 +159,10 @@ def process_one_video_frames(
     # Define full path to the video.
     video_path = os.path.join(video_dir_path, video_name)
 
-    # Define the polygon
-    polygons_data = read_annotations(file_path_polygons)
-    polygon = polygons_data[video_name]
-
-    # Define the intervals
-    intervals_data = read_annotations(file_path_intervals)
-    # intervals = intervals_data[video_name]
-
     # Extract frames from the video
     frames = extract_frames(video_path)
     # Label each frame
-    frames_with_labels = label_frames(
-        frames=frames, intervals_data=intervals_data, video_name=video_name
-    )
+    frames_with_labels = label_frames(frames=frames, intervals=intervals)
 
     all_frame_detections = {}
     for n_frame, (frame, label) in tqdm(
