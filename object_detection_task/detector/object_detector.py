@@ -1,9 +1,19 @@
+import os
 from typing import Dict, List, Optional, Union
 
 import numpy as np
 import torch
 from shapely.geometry import Polygon, box
 from torch import nn
+from tqdm import tqdm
+
+from object_detection_task.data.preprocess_video import (
+    extract_frames,
+    label_frames,
+    prepare_frame_for_detector,
+    read_annotations,
+    recalculate_polygon_coordinates,
+)
 
 
 def load_pretrained_yolov5(model_name: str = "yolov5s") -> nn.Module:
@@ -116,3 +126,84 @@ def check_intersection(
         result_detections.pop(i)
 
     return result_detections
+
+
+def process_one_video_frames(
+    model: torch.nn.Module,
+    video_name: str,
+    video_dir_path: str,
+    file_path_polygons: str,
+    file_path_intervals: str,
+) -> Dict[int, List[Dict[str, Union[int, float]]]]:
+    """Processes all frames of one video, detecting objects and calculating
+        intersections with a polygon.
+
+    Args:
+        model (torch.nn.Module): Loaded YOLOv5 model for object detection.
+        video_name (str): Name of video.
+        video_dir_path (str): Path to directory with videos.
+        file_path_polygons (str): Path to polygons json file.
+        file_path_intervals (str): Path to intervals json file.
+
+    Returns:
+        Dict[int, List[Dict[str, Union[int, float]]]]: A dictionary with n_frame as key
+            and list of dictionaries as value. Each value list containe dictionaries
+            with information about detections and intersections metrics.
+    """
+    up = 50
+    down = 10
+    left = 10
+    right = 10
+
+    # Define full path to the video.
+    video_path = os.path.join(video_dir_path, video_name)
+
+    # Define the polygon
+    polygons_data = read_annotations(file_path_polygons)
+    polygon = polygons_data[video_name]
+
+    # Define the intervals
+    intervals_data = read_annotations(file_path_intervals)
+    # intervals = intervals_data[video_name]
+
+    # Extract frames from the video
+    frames = extract_frames(video_path)
+    # Label each frame
+    frames_with_labels = label_frames(
+        frames=frames, intervals_data=intervals_data, video_name=video_name
+    )
+
+    all_frame_detections = {}
+    for n_frame, (frame, label) in tqdm(
+        enumerate(frames_with_labels),
+        total=len(frames_with_labels),
+        desc="Processing frames",
+    ):
+        prepared_frame = prepare_frame_for_detector(
+            frame=frame,
+            polygon=polygon,
+            up=up,
+            down=down,
+            left=left,
+            right=right,
+        )
+        prepared_polygon = recalculate_polygon_coordinates(
+            polygon,
+            frame.shape[:2],  # type: ignore
+            up=up,
+            down=down,
+            left=left,
+            right=right,
+        )
+        # Detect objects in the frame
+        detections = detect_objects(prepared_frame, model, label)
+        if detections:
+            # Check intersections and calculate metrics for each detection
+            frame_detections_with_metrics = check_intersection(
+                detections, prepared_polygon
+            )
+        else:
+            frame_detections_with_metrics = []
+        all_frame_detections[n_frame] = frame_detections_with_metrics
+
+    return all_frame_detections
