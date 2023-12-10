@@ -44,14 +44,16 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
     return annotations
 
 
-def label_frames(
-    frames: List[np.ndarray], annotations: Dict[str, List[List[int]]], video_name: str
+def label_frames(  # TODO: input only interval for current video, without video_name
+    frames: List[np.ndarray],
+    intervals_data: Dict[str, List[List[int]]],
+    video_name: str,
 ) -> List[Tuple[np.ndarray, int]]:
     """Labels each frame based on the presence of a car within the annotated intervals.
 
     Args:
         frames (List[np.ndarray]): A list of frames from a video.
-        annotations (Dict[str, List[List[int]]]): A dictionary containing intervals
+        intervals_data (Dict[str, List[List[int]]]): A dictionary containing intervals
             for each video where a car is present.
         video_name (str): The name of the video for which frames are being labeled.
 
@@ -59,12 +61,12 @@ def label_frames(
         List[Tuple[np.ndarray, int]]: A list of tuples where each tuple contains a
             frame and its corresponding label (1 for car present, 0 for no car).
     """
-    if video_name not in annotations:
-        raise ValueError("Wrong video name, check annotations")
+    if video_name not in intervals_data:
+        raise ValueError("Wrong video name, check intervals_data")
     labeled_frames = []
     for i, frame in enumerate(frames):
         label = 0  # Default label (no car)
-        for interval in annotations[video_name]:
+        for interval in intervals_data[video_name]:
             if interval[0] <= i <= interval[1]:
                 label = 1  # Car is present
                 break
