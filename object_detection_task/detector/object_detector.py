@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 from typing import Dict, List, Optional, Union
@@ -247,16 +248,37 @@ def process_all_video(
 
 
 if __name__ == "__main__":
-    video_to_val = "video_3.mp4"
+    # Create parser and initialize arguments
+    parser = argparse.ArgumentParser(description="Process videos.")
+    parser.add_argument("--val", default=None, help="The video to validate")
+    parser.add_argument(
+        "--path", default="resources", help="Path to the resources directory"
+    )
+
+    # Collect arguments
+    args = parser.parse_args()
+
+    # Use collected arguments
+    video_to_val = args.video_to_val
+    path_to_resources = args.path_to_resources
+
+    intervals_data_path = os.path.join(path_to_resources, "time_intervals.json")
+    polygons_data_path = os.path.join(path_to_resources, "polygons.json")
+    video_dir_path = os.path.join(path_to_resources, "videos")
     video_list = [
         video
-        for video in read_annotations("resources/polygons.json")
-        if video != video_to_val
+        for video in read_annotations("resources/polygons.json").keys()
+        if video_to_val is not None and video != video_to_val
     ]
+
+    # Process videos and detect objects
     detections = process_all_video(
         video_list=video_list,
-        intervals_data_path="resources/time_intervals.json",
-        polygons_data_path="resources/polygons.json",
+        intervals_data_path=intervals_data_path,
+        polygons_data_path=polygons_data_path,
+        video_dir_path=video_dir_path,
     )
+
+    # Save detection results to JSON
     with open("resources/detections_dict.json", "w") as file:
         json.dump(detections, file)
