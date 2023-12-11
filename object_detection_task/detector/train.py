@@ -233,17 +233,16 @@ def find_threshold(
     return best_threshold_key, max_f1_score
 
 
-if __name__ == "__main__":
+def main() -> Tuple[Optional[Tuple[float, float]], float]:
     # Loading the uploaded files
-    classes_file_path = "/resources/classes.json"
     detections_file_path = "/resources/detections_dict.json"
 
     # Reading the detection data
     with open(detections_file_path, "r") as file:
         detections_data = json.load(file)
 
-    # Reading the class data
-    with open(classes_file_path, "r") as file:
-        classes_data = json.load(file)
+    return find_threshold(detections_data)
 
-    best_threshold_key, max_f1_score = find_threshold(detections_data)
+
+if __name__ == "__main__":
+    print(main())
