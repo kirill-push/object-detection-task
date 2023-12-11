@@ -44,6 +44,24 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
     return annotations
 
 
+def get_labels(intervals: List[List[int]], video_length: int) -> List[int]:
+    """Get labels list from intervals
+
+    Args:
+        intervals (List[List[int]]): Intervals from video.
+        video_length (int): Video length.
+
+    Returns:
+        List[int]: List of labels with 0 or 1 according to intervals.
+    """
+    labels = [0] * video_length
+    for interval in intervals:
+        start, end = interval
+        for i in range(start, end + 1):
+            labels[i] = 1
+    return labels
+
+
 def label_frames(
     frames: List[np.ndarray],
     intervals: Optional[List[List[int]]],
