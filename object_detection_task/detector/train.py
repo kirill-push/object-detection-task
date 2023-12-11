@@ -116,3 +116,37 @@ def predict_vehicle_in_video(
             frame_data, intersection_threshold, confidence_threshold
         )
     return predictions
+
+
+def calculate_metrics(
+    actual_labels: List[int], predicted_labels: List[int]
+) -> Dict[str, float]:
+    """Calculate F1-score, Recall, Accuracy, Precision, and False Positive Rate (FPR)
+        based on actual and predicted labels.
+
+    Args:
+        actual_labels (List[int]): The actual labels for each frame in the video.
+        predicted_labels (List[int]): The predicted labels for each frame in the video.
+
+    Returns:
+        Dict[str, float]: A dictionary containing the calculated metrics.
+    """
+    y_true = np.array(actual_labels)
+    y_pred = np.array(predicted_labels)
+
+    class_weights = np.where(
+        y_true == 1,
+        np.sum(y_true == 0) / np.sum(y_true == 1),
+        np.sum(y_true == 1) / np.sum(y_true == 0),
+    )
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    fpr_score = fp / (fp + tn) if (fp + tn) > 0 else 0
+
+    metrics = {
+        "f1_score": f1_score(y_true, y_pred, zero_division=1),
+        "recall": recall_score(y_true, y_pred, zero_division=1),
+        "accuracy": accuracy_score(y_true, y_pred, sample_weight=class_weights),
+        "precision": precision_score(y_true, y_pred, zero_division=1),
+        "fpr": fpr_score,
+    }
+    return metrics
