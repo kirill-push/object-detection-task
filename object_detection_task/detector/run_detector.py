@@ -1,13 +1,10 @@
 import argparse
 import json
-import os
 from typing import Dict, List
 
 from object_detection_task.data.preprocess_video import VideoDataManager
-from object_detection_task.detector.detect_objects import (
-    load_pretrained_yolov5,
-    process_one_video,
-)
+from object_detection_task.detector.detect_objects import ObjectDetector
+
 from object_detection_task.detector.train import predict_vehicle_in_video
 
 
@@ -30,12 +27,10 @@ def predict(
     intersection_threshold = thresholds_dict["intersection_threshold"]
     confidence_threshold = thresholds_dict["confidence_threshold"]
 
-    # Init model
-    model = load_pretrained_yolov5("yolov5x6")
+    detector = ObjectDetector()
 
     # Detect objects on video
-    frame_detection = process_one_video(
-        model=model,
+    frame_detection = detector.process_one_video(
         video_manager=video_manager,
     )
 
