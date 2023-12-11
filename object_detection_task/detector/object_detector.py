@@ -250,7 +250,7 @@ def process_all_video(
 
 if __name__ == "__main__":
     # Create parser and initialize arguments
-    parser = argparse.ArgumentParser(description="Process videos.")
+    parser = argparse.ArgumentParser(description="Detect objects on videos")
     parser.add_argument("--val", default=None, help="The video to validate")
     parser.add_argument(
         "--path", default="resources", help="Path to the resources directory"
