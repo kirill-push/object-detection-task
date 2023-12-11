@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -46,25 +46,30 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
 
 def label_frames(
     frames: List[np.ndarray],
-    intervals: List[List[int]],
+    intervals: Optional[List[List[int]]],
 ) -> List[Tuple[np.ndarray, int]]:
     """Labels each frame based on the presence of a car within the annotated intervals.
 
     Args:
         frames (List[np.ndarray]): A list of frames from a video.
-        intervals (List[List[int]]): Intervals for frames where a car is present.
+        intervals (List[List[int]] | None): Intervals for frames where a car is present.
+            For predict mode use intervals=None.
 
     Returns:
         List[Tuple[np.ndarray, int]]: A list of tuples where each tuple contains a
             frame and its corresponding label (1 for car present, 0 for no car).
+            If interval is None, then return List[Tuple[np.ndarray, -1]]
     """
     labeled_frames = []
     for i, frame in enumerate(frames):
         label = 0  # Default label (no car)
-        for interval in intervals:
-            if interval[0] <= i <= interval[1]:
-                label = 1  # Car is present
-                break
+        if intervals is not None:
+            for interval in intervals:
+                if interval[0] <= i <= interval[1]:
+                    label = 1  # Car is present
+                    break
+        else:
+            label = -1
         labeled_frames.append((frame, label))
     return labeled_frames
 
