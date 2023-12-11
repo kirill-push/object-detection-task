@@ -89,3 +89,30 @@ def predict_vehicle_presence_sorted(
 
     # No vehicle detected after considering confidence and intersection thresholds
     return 0
+
+
+def predict_vehicle_in_video(
+    video_data: Dict[str, Dict[str, List[Dict]]],
+    intersection_threshold: float = 0.25,
+    confidence_threshold: float = 0.3,
+) -> Dict[str, int]:
+    """Predicts the presence of a vehicle for each frame in a video.
+
+    Args:
+        video_data (Dict[str, Dict[str, List[Dict]]]): The data for a single video,
+            containing frame data.
+        intersection_threshold (float): The minimum proportion of intersection to
+            consider a detection significant.
+        confidence_threshold (float): The minimum confidence level to consider a
+            detection reliable.
+
+    Returns:
+        Dict[str, int]: A dictionary with frame numbers as keys and vehicle presence
+            predictions (1/0) as values.
+    """
+    predictions = {}
+    for frame_number, frame_data in video_data.items():
+        predictions[frame_number] = predict_vehicle_presence_sorted(
+            frame_data, intersection_threshold, confidence_threshold
+        )
+    return predictions
