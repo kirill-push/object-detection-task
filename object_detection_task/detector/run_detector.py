@@ -60,3 +60,33 @@ def predict(
         confidence_threshold=confidence_threshold,
     )
     return predictions
+
+
+def make_intervals(predictions: Dict[str, int]) -> List[List[int]]:
+    """Makes intervals from prediction.
+
+    Args:
+        predictions (Dict[str, int]): Dictionary with frame numbers and predictions.
+
+    Returns:
+        List[List[int]]: List with intervals.
+    """
+    intervals = []
+    start_frame = None
+
+    # Convert keys to integers for correct sorting
+    sorted_keys = sorted(predictions.keys(), key=lambda x: int(x))
+
+    for frame in sorted_keys:
+        if predictions[str(frame)] == 1 and start_frame is None:
+            # Start of a new interval
+            start_frame = int(frame)
+        elif predictions[str(frame)] == 0 and start_frame is not None:
+            # End of the current interval
+            intervals.append([start_frame, int(frame) - 1])
+            start_frame = None
+
+    # Check if the video ends during an interval
+    if start_frame is not None:
+        intervals.append([start_frame, int(sorted_keys[-1])])
+    return intervals
