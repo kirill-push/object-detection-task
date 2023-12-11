@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Dict, List, Optional, Union
 
@@ -11,6 +12,7 @@ from object_detection_task.data.preprocess_video import (
     extract_frames,
     label_frames,
     prepare_frame_for_detector,
+    read_annotations,
     recalculate_polygon_coordinates,
 )
 
@@ -201,3 +203,60 @@ def process_one_video_frames(
         }
 
     return all_frame_detections
+
+
+def process_all_video(
+    video_list: Optional[List[str]],
+    intervals_data_path: str,
+    polygons_data_path: str,
+    yolo_weights: str = "yolov5x6",
+    video_dir_path: str = "resources/videos",
+) -> Dict[str, Dict[str, Dict[str, List[Dict]]]]:
+    """Processes all frames of all videos, detecting objects and calculating
+        intersections with a polygon.
+
+    Args:
+        video_list (List[str] | None): List of videos to process. If None, then use all
+            videos.
+        intervals_data_path (str): Path to intevals annotation.
+        polygons_data_path (str): Path to polygons annotation.
+        yolo_weights (str, optional): Name of YOLO weights.
+            Defaults to 'yolov5x6'.
+
+    Returns:
+        Dict[str, Dict[str, Dict[str, List[Dict]]]]: _description_
+    """
+    model = load_pretrained_yolov5(yolo_weights)
+    all_detections = {}
+    intervals_data = read_annotations(intervals_data_path)
+    polygons_data = read_annotations(polygons_data_path)
+    if video_list is None:
+        video_list = list(polygons_data.keys())
+    for video in video_list:
+        intervals = intervals_data[video]
+        polygon = polygons_data[video]
+        processed_frames = process_one_video_frames(
+            model,
+            video_name=video,
+            video_dir_path=video_dir_path,
+            polygon=polygon,
+            intervals=intervals,
+        )
+        all_detections[video] = processed_frames
+    return all_detections
+
+
+if __name__ == "__main__":
+    video_to_val = "video_3.mp4"
+    video_list = [
+        video
+        for video in read_annotations("resources/polygons.json")
+        if video != video_to_val
+    ]
+    detections = process_all_video(
+        video_list=video_list,
+        intervals_data_path="resources/time_intervals.json",
+        polygons_data_path="resources/polygons.json",
+    )
+    with open("resources/detections_dict.json", "w") as file:
+        json.dump(detections, file)
