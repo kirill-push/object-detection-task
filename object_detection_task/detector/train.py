@@ -1,4 +1,6 @@
+import argparse
 import json
+import os
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -236,4 +238,26 @@ def find_threshold(
 
 
 if __name__ == "__main__":
-    print(find_threshold("/resources/detections_dict.json"))
+    # Create parser and initialize arguments
+    parser = argparse.ArgumentParser(description="Process videos.")
+    parser.add_argument(
+        "--path", default="resources", help="Path to the resources directory"
+    )
+
+    # Collect arguments
+    args = parser.parse_args()
+
+    # Use collected arguments
+    path_to_resources = args.path_to_resources
+    detection_dict_path = os.path.join(path_to_resources, "detections_dict.json")
+    threshold_json_path = os.path.join(path_to_resources, "thresholds.json")
+
+    thresholds_result = find_threshold(detection_dict_path)
+
+    threshold_dict_to_save = {
+        "intersection_threshold": thresholds_result[0],
+        "confidence_threshold": thresholds_result[1],
+    }
+    # Save detection results to JSON
+    with open(threshold_json_path, "w") as file:
+        json.dump(threshold_dict_to_save, file)
