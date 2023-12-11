@@ -10,7 +10,7 @@ class AnnotationManager:
     def __init__(self, annotation_path: str, mode: str):
         self.annotation_path = annotation_path
         self.annotations = self.read_annotations()
-        if mode not in ['polygons', 'intervals']:
+        if mode not in ["polygons", "intervals"]:
             raise ValueError("Wrong mode, should be polygons or intervals")
         self.mode = mode
         self.video_list = list(self.annotations.keys())
@@ -51,32 +51,36 @@ class AnnotationManager:
             for i in range(start, end + 1):
                 labels[i] = 1
         return labels
-    
+
     def data(self):
         return self.annotations
-    
+
     def __call__(self, video_name: str):
         return self.annotations[video_name]
 
 
 class VideoDataManager:
-    def __init__(self, video_path: str, intervals_path: Optional[str], polygons_path: str):
+    def __init__(
+        self, video_path: str, intervals_path: Optional[str], polygons_path: str
+    ):
         self.video_path = video_path
         self.video_dir_path = os.path.dirname(video_path)
         self.video_name = os.path.basename(video_path)
-        
+
         self.frames = self.extract_frames()
         self.length = len(self.frames)
         if intervals_path is not None:
-            self.intervals_manager = AnnotationManager(intervals_path, 'intervals')
+            self.intervals_manager = AnnotationManager(intervals_path, "intervals")
             self.intervals = self.intervals_manager(self.video_name)
         else:
             self.intervals = None
-        
-        self.polygons_manager = AnnotationManager(polygons_path, 'polygons')
+
+        self.polygons_manager = AnnotationManager(polygons_path, "polygons")
         self.polygon = self.polygons_manager(self.video_name)
         if intervals_path is not None:
-            self.labels = self.intervals_manager.get_labels(self.video_name, self.length)
+            self.labels = self.intervals_manager.get_labels(
+                self.video_name, self.length
+            )
         else:
             self.labels = [-1] * self.length
 
@@ -99,15 +103,15 @@ class VideoDataManager:
         return frames
 
     def prepare_frame_for_detector(
-            self,
-            n_frame: int,
-            target_size: Tuple[int, int] = (1280, 1280),
-            keep_aspect_ratio: bool = True,
-            up: int = 50,
-            down: int = 50,
-            right: int = 50,
-            left: int = 50,
-        ) -> np.ndarray:        
+        self,
+        n_frame: int,
+        target_size: Tuple[int, int] = (1280, 1280),
+        keep_aspect_ratio: bool = True,
+        up: int = 50,
+        down: int = 50,
+        right: int = 50,
+        left: int = 50,
+    ) -> np.ndarray:
         """Prepares video frame for detector processing.
 
         Args:
@@ -122,7 +126,7 @@ class VideoDataManager:
             left (int, optional): Padding on left. Defaults to 0.
 
         Returns:
-            np.ndarray: The prepared frame as a numpy array.        
+            np.ndarray: The prepared frame as a numpy array.
         """
         cropped_frame = self.crop_polygon_from_frame(
             n_frame=n_frame,
@@ -158,16 +162,16 @@ class VideoDataManager:
         return new_frame
 
     def crop_polygon_from_frame(
-            self,
-            n_frame: int,
-            same_size: bool = False,
-            bg_color_id: Tuple[int, int, int] = (0, 0, 0),
-            min_square: bool = False,
-            up: int = 50,
-            down: int = 50,
-            right: int = 50,
-            left: int = 50,
-        ) -> np.ndarray:
+        self,
+        n_frame: int,
+        same_size: bool = False,
+        bg_color_id: Tuple[int, int, int] = (0, 0, 0),
+        min_square: bool = False,
+        up: int = 50,
+        down: int = 50,
+        right: int = 50,
+        left: int = 50,
+    ) -> np.ndarray:
         """Crops a polygon region from a given frame with additional padding.
 
         Args:
@@ -245,14 +249,14 @@ class VideoDataManager:
         return self.labeled_frames
 
     def recalculate_polygon_coordinates(
-            self,
-            target_size: Tuple[int, int] = (1280, 1280),
-            keep_aspect_ratio: bool = True,
-            up: int = 50,
-            down: int = 50,
-            right: int = 50,
-            left: int = 50,
-        ) -> List[List[int]]:
+        self,
+        target_size: Tuple[int, int] = (1280, 1280),
+        keep_aspect_ratio: bool = True,
+        up: int = 50,
+        down: int = 50,
+        right: int = 50,
+        left: int = 50,
+    ) -> List[List[int]]:
         """Recalculates coordinates of polygon after frame has been cropped and resized.
 
         Args:

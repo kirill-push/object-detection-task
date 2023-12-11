@@ -221,10 +221,12 @@ def process_all_video(
     model = load_pretrained_yolov5(yolo_weights)
     all_detections = {}
     if video_list is None:
-        video_list = AnnotationManager(polygons_data_path, 'polygons').video_list
+        video_list = AnnotationManager(polygons_data_path, "polygons").video_list
     for video in video_list:
         video_path = os.path.join(video_dir_path, video)
-        video_manager = VideoDataManager(video_path, intervals_data_path, polygons_data_path)
+        video_manager = VideoDataManager(
+            video_path, intervals_data_path, polygons_data_path
+        )
         processed_frames = process_one_video(
             model,
             video_manager=video_manager,
@@ -253,7 +255,7 @@ if __name__ == "__main__":
     video_dir_path = os.path.join(path_to_resources, "videos")
     video_list = [  # TODO use train_test_split
         video
-        for video in AnnotationManager(polygons_data_path, 'polygons').video_list
+        for video in AnnotationManager(polygons_data_path, "polygons").video_list
         if video_to_val is not None and video != video_to_val
     ]
 

@@ -63,14 +63,18 @@ def analyze_video_brightness_variance(
         Dict[int, Tuple[float, int]]: A dictionary mapping frame indices to a tuple of
             variance and label.
     """
-    video_manager = VideoDataManager(video_path, file_path_intervals, file_path_polygons)
+    video_manager = VideoDataManager(
+        video_path, file_path_intervals, file_path_polygons
+    )
 
     variance_dict = {}
 
     # Loop through each frame, crop it using the polygon,
     # and calculate its brightness variance
     for i, (_, label) in enumerate(video_manager.label_frames()):
-        cropped = video_manager.crop_polygon_from_frame(n_frame=i, min_square=min_square)
+        cropped = video_manager.crop_polygon_from_frame(
+            n_frame=i, min_square=min_square
+        )
         variance = calculate_brightness_variance(cropped)
         variance_dict[i] = (variance, label)
 
@@ -172,7 +176,7 @@ def process_all_videos(
 
     combined_normalized_variance_dict = {}
     if video_list is None:
-        video_list = AnnotationManager(file_path_polygons, 'polygons').video_list
+        video_list = AnnotationManager(file_path_polygons, "polygons").video_list
     for video_name in video_list:
         video_path = os.path.join(path_to_video_dir, video_name)
         variance_dict = analyze_video_brightness_variance(
