@@ -152,9 +152,9 @@ def process_one_video_frames(
             with information about detections and intersections metrics.
     """
     up = 50
-    down = 10
-    left = 10
-    right = 10
+    down = 50
+    left = 50
+    right = 50
 
     # Define full path to the video.
     video_path = os.path.join(video_dir_path, video_name)
