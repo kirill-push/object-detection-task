@@ -46,10 +46,10 @@ class ObjectDetector:
         return model.eval().to(device)
 
     def detect_objects(
-            self,
-            frame: np.ndarray,
-            label: Optional[int] = None,
-        ) -> List[Dict[str, Union[int, float]]]:
+        self,
+        frame: np.ndarray,
+        label: Optional[int] = None,
+    ) -> List[Dict[str, Union[int, float]]]:
         """Detects objects in a given frame using a preloaded YOLOv5 model.
 
         Args:
@@ -84,10 +84,10 @@ class ObjectDetector:
         return detections
 
     def check_intersection(
-            self,
-            detections: List[Dict[str, Union[int, float]]],
-            polygon: List[List[int]],
-        ) -> List[Dict[str, Union[int, float]]]:
+        self,
+        detections: List[Dict[str, Union[int, float]]],
+        polygon: List[List[int]],
+    ) -> List[Dict[str, Union[int, float]]]:
         """Determines whether a detected objects intersect with a given polygon and
             calculates metrics.
 
@@ -133,14 +133,14 @@ class ObjectDetector:
         return result_detections
 
     def process_one_video(
-            self,
-            video_manager: VideoDataManager,
-            target_size: Tuple[int, int] = (1280, 1280),
-            up: int = 50,
-            down: int = 50,
-            left: int = 50,
-            right: int = 50,
-        ) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
+        self,
+        video_manager: VideoDataManager,
+        target_size: Tuple[int, int] = (1280, 1280),
+        up: int = 50,
+        down: int = 50,
+        left: int = 50,
+        right: int = 50,
+    ) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
         """Processes all frames of one video, detecting objects and calculating
             intersections with a polygon.
 
@@ -200,12 +200,12 @@ class ObjectDetector:
         return all_frame_detections
 
     def process_all_video(
-            self,
-            video_list: Optional[List[str]],
-            intervals_data_path: str,
-            polygons_data_path: str,
-            video_dir_path: str = "resources/videos",
-        ) -> Dict[str, Dict[str, Dict[str, List[Dict]]]]:
+        self,
+        video_list: Optional[List[str]],
+        intervals_data_path: str,
+        polygons_data_path: str,
+        video_dir_path: str = "resources/videos",
+    ) -> Dict[str, Dict[str, Dict[str, List[Dict]]]]:
         """Processes all frames of all videos, detecting objects and calculating
             intersections with a polygon.
 
