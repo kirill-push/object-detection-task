@@ -150,3 +150,50 @@ def calculate_metrics(
         "fpr": fpr_score,
     }
     return metrics
+
+
+def calculate_global_metrics(
+    filtered_detections_data: Dict[str, Dict[str, Dict[str, List[Dict]]]],
+    num_intersection_thresholds: int = 30,
+    num_confidence_thresholds: int = 30,
+) -> Dict[Tuple[float, float], Dict[str, float]]:
+    """Calculate global metrics by aggregating all predictions and labels across videos
+        for different thresholds.
+
+    Args:
+        filtered_detections_data (Dict[str, Dict[str, Dict[str, List[Dict]]]]): Filtered
+            detections data for all videos.
+        num_intersection_thresholds (int): Number of steps for intersection threshold.
+        num_confidence_thresholds (int): Number of steps for confidence threshold.
+
+    Returns:
+        Dict[Tuple[float, float], Dict[str, float]]: A dictionary with threshold pairs
+            as keys and corresponding global metrics as values.
+    """
+    global_threshold_metrics = {}
+    for intersection_threshold in np.linspace(0.01, 1.0, num_intersection_thresholds):
+        for confidence_threshold in np.linspace(0.24, 0.8, num_confidence_thresholds):
+            all_actual_labels = []
+            all_predicted_labels = []
+            for _, one_video_data in filtered_detections_data.items():
+                actual_labels = [
+                    frame_data["label"] for frame_data in one_video_data.values()
+                ]
+                vehicle_presence_predictions = predict_vehicle_in_video(
+                    one_video_data, intersection_threshold, confidence_threshold
+                )
+                predicted_labels = list(vehicle_presence_predictions.values())
+
+                # Aggregate labels and predictions
+                all_actual_labels.extend(actual_labels)
+                all_predicted_labels.extend(predicted_labels)
+
+            # Calculate global metrics
+            calculated_metrics = calculate_metrics(
+                all_actual_labels, all_predicted_labels  # type: ignore
+            )
+            global_threshold_metrics[
+                (intersection_threshold, confidence_threshold)
+            ] = calculated_metrics
+
+    return global_threshold_metrics
