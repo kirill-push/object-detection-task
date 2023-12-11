@@ -195,6 +195,9 @@ def process_one_video_frames(
             )
         else:
             frame_detections_with_metrics = []
-        all_frame_detections[n_frame] = frame_detections_with_metrics
+        all_frame_detections[n_frame] = {
+            'label': label,
+            'detector_result': frame_detections_with_metrics
+        }
 
     return all_frame_detections
