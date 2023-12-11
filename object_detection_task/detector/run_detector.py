@@ -4,7 +4,7 @@ import os
 from typing import Dict, List
 
 from object_detection_task.data.preprocess_video import read_annotations
-from object_detection_task.detector.object_detector import (
+from object_detection_task.detector.detect_objects import (
     load_pretrained_yolov5,
     process_one_video,
 )
