@@ -134,7 +134,7 @@ def test_crop_irregular_polygon(mock_frame: np.ndarray, same_size: bool) -> None
         assert cropped.shape == (expected_height, expected_width, 3)
 
 
-def test_get_labels():
+def test_get_labels() -> None:
     test_intervals = [[1, 4], [6, 6], [9, 10]]
     test_length = 12
     labels = preprocess_video.get_labels(test_intervals, test_length)
