@@ -272,3 +272,14 @@ def recalculate_polygon_coordinates(
         recalculated_polygon.append([new_x, new_y])
 
     return recalculated_polygon
+
+
+def safe_dict_to_json(any_dict: Dict, path_to_file: str) -> None:
+    """Save dictionary to JSON
+
+    Args:
+        any_dict (Dict): Any dictionary.
+        path_to_file (str): Saving path.
+    """
+    with open(path_to_file, "w") as file:
+        json.dump(any_dict, file)
