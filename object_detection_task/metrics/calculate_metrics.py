@@ -1,5 +1,4 @@
 import argparse
-import os
 from typing import Dict
 
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score

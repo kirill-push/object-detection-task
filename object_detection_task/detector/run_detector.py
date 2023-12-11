@@ -4,7 +4,6 @@ from typing import Dict, List
 
 from object_detection_task.data.preprocess_video import VideoDataManager
 from object_detection_task.detector.detect_objects import ObjectDetector
-
 from object_detection_task.detector.train import predict_vehicle_in_video
 
 

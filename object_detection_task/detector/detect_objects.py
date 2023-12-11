@@ -210,8 +210,8 @@ class ObjectDetector:
             intersections with a polygon.
 
         Args:
-            video_list (List[str] | None): List of videos to process. If None, then use all
-                videos.
+            video_list (List[str] | None): List of videos to process. If None, then use 
+            all videos.
             intervals_data_path (str): Path to intevals annotation.
             polygons_data_path (str): Path to polygons annotation.
             video_dir_path (str): Path to directory with videos.
