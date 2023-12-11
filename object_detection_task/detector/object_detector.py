@@ -135,7 +135,7 @@ def process_one_video_frames(
     video_dir_path: str,
     polygon: List[List[int]],
     intervals: List[List[int]],
-) -> Dict[int, List[Dict[str, Union[int, float]]]]:
+) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
     """Processes all frames of one video, detecting objects and calculating
         intersections with a polygon.
 
@@ -147,9 +147,9 @@ def process_one_video_frames(
         intervals (List[List[int]]): Intervals for video_name.
 
     Returns:
-        Dict[int, List[Dict[str, Union[int, float]]]]: A dictionary with n_frame as key
-            and list of dictionaries as value. Each value list containe dictionaries
-            with information about detections and intersections metrics.
+        Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]: Dictionary with
+            n_frame as key and list of dictionaries as value. Each value list containe
+            dictionaries with information about detections and intersections metrics.
     """
     up = 50
     down = 50
@@ -196,8 +196,8 @@ def process_one_video_frames(
         else:
             frame_detections_with_metrics = []
         all_frame_detections[n_frame] = {
-            'label': label,
-            'detector_result': frame_detections_with_metrics
+            "label": label,
+            "detector_result": frame_detections_with_metrics,
         }
 
     return all_frame_detections
