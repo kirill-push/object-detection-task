@@ -51,3 +51,41 @@ def filter_vehicles(
     return filtered_detections
 
 
+def predict_vehicle_presence_sorted(
+    frame_data: Dict[str, List[Dict[str, Union[float, int]]]],
+    intersection_threshold: float = 0.25,
+    confidence_threshold: float = 0.3,
+) -> int:
+    """Predicts the presence of a vehicle in a frame based on the detection results,
+        first sorting detections by confidence level and then checking for intersection
+        proportion.
+
+    Args:
+        frame_data (Dict[str, List[Dict[str, Union[float, int]]]]): Data for a single
+            frame, containing 'label' and 'detector_result'.
+        intersection_threshold (float): Minimum proportion of intersection to consider
+            a detection significant.
+        confidence_threshold (float): Minimum confidence level to consider a detection
+            reliable.
+
+    Returns:
+        int: 1 if a vehicle is predicted to be present in the frame, 0 otherwise.
+    """
+    if not frame_data["detector_result"]:
+        return 0  # No objects detected, so no vehicle present
+
+    # Sort detections by confidence level in descending order
+    sorted_detections = sorted(
+        frame_data["detector_result"], key=lambda x: x["confidence"], reverse=True
+    )
+
+    # Check each sorted detection for significant intersection and high confidence
+    for detection in sorted_detections:
+        if (
+            detection["proportion_of_intersection"] >= intersection_threshold
+            and detection["confidence"] >= confidence_threshold
+        ):
+            return 1  # Vehicle detected
+
+    # No vehicle detected after considering confidence and intersection thresholds
+    return 0
