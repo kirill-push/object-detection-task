@@ -1,1 +1,62 @@
-from object_detection_task.detector.train import find_threshold
+import argparse
+import json
+import os
+from typing import Dict, List
+
+from object_detection_task.data.preprocess_video import read_annotations
+from object_detection_task.detector.object_detector import (
+    load_pretrained_yolov5,
+    process_one_video,
+)
+from object_detection_task.detector.train import predict_vehicle_in_video
+
+
+def predict(
+    video_path: str,
+    polygon_path: str,
+    thresholds_path: str = "resources/thresholds.json",
+) -> Dict[str, int]:
+    """Makes oredictions for one video.
+
+    Args:
+        video_path (str): Path to video which we want to process.
+        polygon_path (str): Path to JSON with boundaries for this video.
+        thresholds_path (str): Path to JSON file with thresholds.
+
+    Returns:
+        Dict[str, int]: A dict containing frames as keys and prediction as values.
+    """
+    # Reading thresholds dict
+    with open(thresholds_path, "r") as file:
+        thresholds_dict = json.load(file)
+    intersection_threshold = thresholds_dict["intersection_threshold"]
+    confidence_threshold = thresholds_dict["confidence_threshold"]
+
+    # Init model
+    model = load_pretrained_yolov5("yolov5x6")
+
+    # Prepare args to process func
+    video_dir_path = os.path.dirname(video_path)
+    video_name = os.path.basename(video_path)
+    polygons_data = read_annotations(polygon_path)
+    if isinstance(polygons_data, Dict):
+        polygon = polygons_data[video_name]
+    else:
+        raise ValueError("polygons.json should store dict with key video_name")
+
+    # Detect objects on video
+    frame_detection = process_one_video(
+        model=model,
+        video_name=video_name,
+        video_dir_path=video_dir_path,
+        polygon=polygon,
+        intervals=None,
+    )
+
+    # Process detector data to prediction
+    predictions = predict_vehicle_in_video(
+        video_data=frame_detection,
+        intersection_threshold=intersection_threshold,
+        confidence_threshold=confidence_threshold,
+    )
+    return predictions
