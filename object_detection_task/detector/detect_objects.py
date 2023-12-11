@@ -1,7 +1,7 @@
 import argparse
 import json
 import os
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -10,11 +10,8 @@ from torch import nn
 from tqdm import tqdm
 
 from object_detection_task.data.preprocess_video import (
-    extract_frames,
-    label_frames,
-    prepare_frame_for_detector,
-    read_annotations,
-    recalculate_polygon_coordinates,
+    AnnotationManager,
+    VideoDataManager,
 )
 
 
@@ -134,57 +131,50 @@ def check_intersection(
 
 def process_one_video(
     model: torch.nn.Module,
-    video_name: str,
-    video_dir_path: str,
-    polygon: List[List[int]],
-    intervals: Optional[List[List[int]]],
+    video_manager: VideoDataManager,
+    target_size: Tuple[int, int] = (1280, 1280),
+    up: int = 50,
+    down: int = 50,
+    left: int = 50,
+    right: int = 50,
 ) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
     """Processes all frames of one video, detecting objects and calculating
         intersections with a polygon.
 
     Args:
         model (torch.nn.Module): Loaded YOLOv5 model for object detection.
-        video_name (str): Name of video.
-        video_dir_path (str): Path to directory with videos.
-        polygon (List[List[int]]): Polygon for video_name.
-        intervals (List[List[int]] | None): Intervals for video_name. For predict mode
-            use intervals=None.
+        video_manager (VideoDataManager): Video data manager for video
+        target_size (Tuple[int, int]): Target frame size for the model.
+            Defaults to (1280, 1280).
+        up (int, optional): Padding on top. Defaults to 50.
+        down (int, optional): Padding at bottom. Defaults to 50.
+        right (int, optional): Padding on right. Defaults to 50.
+        left (int, optional): Padding on left. Defaults to 50.
 
     Returns:
         Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]: Dictionary with
             n_frame as key and list of dictionaries as value. Each value list containe
             dictionaries with information about detections and intersections metrics.
     """
-    up = 50
-    down = 50
-    left = 50
-    right = 50
-
-    # Define full path to the video.
-    video_path = os.path.join(video_dir_path, video_name)
-
-    # Extract frames from the video
-    frames = extract_frames(video_path)
     # Label each frame
-    frames_with_labels = label_frames(frames=frames, intervals=intervals)
+    frames_with_labels = video_manager.label_frames()
 
     all_frame_detections = {}
-    for n_frame, (frame, label) in tqdm(
+    for n_frame, (_, label) in tqdm(
         enumerate(frames_with_labels),
         total=len(frames_with_labels),
         desc="Processing frames",
     ):
-        prepared_frame = prepare_frame_for_detector(
-            frame=frame,
-            polygon=polygon,
+        prepared_frame = video_manager.prepare_frame_for_detector(
+            n_frame=n_frame,
+            target_size=target_size,
             up=up,
             down=down,
             left=left,
             right=right,
         )
-        prepared_polygon = recalculate_polygon_coordinates(
-            polygon,
-            frame.shape[:2],  # type: ignore
+        prepared_polygon = video_manager.recalculate_polygon_coordinates(
+            target_size=target_size,
             up=up,
             down=down,
             left=left,
@@ -230,19 +220,14 @@ def process_all_video(
     """
     model = load_pretrained_yolov5(yolo_weights)
     all_detections = {}
-    intervals_data = read_annotations(intervals_data_path)
-    polygons_data = read_annotations(polygons_data_path)
     if video_list is None:
-        video_list = list(polygons_data.keys())
+        video_list = AnnotationManager(polygons_data_path, 'polygons').video_list
     for video in video_list:
-        intervals = intervals_data[video]
-        polygon = polygons_data[video]
+        video_path = os.path.join(video_dir_path, video)
+        video_manager = VideoDataManager(video_path, intervals_data_path, polygons_data_path)
         processed_frames = process_one_video(
             model,
-            video_name=video,
-            video_dir_path=video_dir_path,
-            polygon=polygon,
-            intervals=intervals,
+            video_manager=video_manager,
         )
         all_detections[video] = processed_frames
     return all_detections
@@ -266,9 +251,9 @@ if __name__ == "__main__":
     intervals_data_path = os.path.join(path_to_resources, "time_intervals.json")
     polygons_data_path = os.path.join(path_to_resources, "polygons.json")
     video_dir_path = os.path.join(path_to_resources, "videos")
-    video_list = [
+    video_list = [  # TODO use train_test_split
         video
-        for video in read_annotations("resources/polygons.json").keys()
+        for video in AnnotationManager(polygons_data_path, 'polygons').video_list
         if video_to_val is not None and video != video_to_val
     ]
 

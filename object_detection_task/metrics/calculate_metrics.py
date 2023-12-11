@@ -5,9 +5,7 @@ from typing import Dict
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 from object_detection_task.data.preprocess_video import (
-    extract_frames,
-    get_labels,
-    read_annotations,
+    VideoDataManager,
     safe_dict_to_json,
 )
 from object_detection_task.detector.run_detector import predict
@@ -20,16 +18,12 @@ def compute_metrics(
     thresholds_path: str = "resources/thresholds.json",
 ) -> Dict[str, float]:
     # Process params
-    video_name = os.path.basename(video_path)
-    intervals = read_annotations(intervals_path)[video_name]
-    # Get video length to compute labels
-    video_length = len(extract_frames(video_path))
+    video_manager = VideoDataManager(video_path, intervals_path, polygons_path)
     # Get labels list from intervals
-    labels = get_labels(intervals, video_length)
+    labels = video_manager.labels
     # Make predictions
     predictions_dict = predict(
-        video_path=video_path,
-        polygons_path=polygons_path,
+        video_manager=video_manager,
         thresholds_path=thresholds_path,
     )
     predictions = list(predictions_dict.values())
