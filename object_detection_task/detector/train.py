@@ -197,3 +197,37 @@ def calculate_global_metrics(
             ] = calculated_metrics
 
     return global_threshold_metrics
+
+
+def find_threshold(
+    detections_data: Dict[
+        str, Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]
+    ],
+    vehicle_class_ids: List[int] = [0, 1, 2, 3, 4, 5, 7, 28],
+) -> Tuple[Optional[Tuple[float, float]], float]:
+    """Finds the best intersection and confidence thresholds for vehicle detection based
+        on the maximum F1-score.
+
+    Args:
+        detections_data (Dict[str, Dict[int, Dict]]): Raw detections for all videos.
+        vehicle_class_ids (Set[int]): A set of class IDs to be considered as vehicles.
+
+    Returns:
+        Tuple[Optional[Tuple[float, float]], float]: A tuple containing the best
+            threshold pair and the maximum F1-score.
+    """
+    # Filter the detections data to include only vehicle objects
+    filtered_detections_data = filter_vehicles(detections_data, vehicle_class_ids)
+    global_threshold_metrics = calculate_global_metrics(filtered_detections_data)
+
+    max_f1_score = 0.0
+    best_threshold_key = None
+
+    # Iterate through global metrics to find the best threshold based on max F1-score
+    for threshold_key, video_metrics in global_threshold_metrics.items():
+        f1 = video_metrics["f1_score"]
+        if f1 > max_f1_score:  # Update if a higher F1-score is found
+            max_f1_score = f1
+            best_threshold_key = threshold_key
+
+    return best_threshold_key, max_f1_score
