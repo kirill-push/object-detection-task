@@ -132,7 +132,7 @@ def check_intersection(
     return result_detections
 
 
-def process_one_video_frames(
+def process_one_video(
     model: torch.nn.Module,
     video_name: str,
     video_dir_path: str,
@@ -237,7 +237,7 @@ def process_all_video(
     for video in video_list:
         intervals = intervals_data[video]
         polygon = polygons_data[video]
-        processed_frames = process_one_video_frames(
+        processed_frames = process_one_video(
             model,
             video_name=video,
             video_dir_path=video_dir_path,
