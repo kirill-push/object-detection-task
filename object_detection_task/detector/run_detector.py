@@ -13,14 +13,14 @@ from object_detection_task.detector.train import predict_vehicle_in_video
 
 def predict(
     video_path: str,
-    polygon_path: str,
+    polygons_path: str,
     thresholds_path: str = "resources/thresholds.json",
 ) -> Dict[str, int]:
     """Makes oredictions for one video.
 
     Args:
         video_path (str): Path to video which we want to process.
-        polygon_path (str): Path to JSON with boundaries for this video.
+        polygons_path (str): Path to JSON with boundaries for this video.
         thresholds_path (str): Path to JSON file with thresholds.
 
     Returns:
@@ -38,7 +38,7 @@ def predict(
     # Prepare args to process func
     video_dir_path = os.path.dirname(video_path)
     video_name = os.path.basename(video_path)
-    polygons_data = read_annotations(polygon_path)
+    polygons_data = read_annotations(polygons_path)
     if isinstance(polygons_data, Dict):
         polygon = polygons_data[video_name]
     else:
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     intervals = make_intervals(
         predict(
             video_path=video_path,
-            polygon_path=polygon_path,
+            polygons_path=polygon_path,
             thresholds_path=thresholds_path,
         )
     )

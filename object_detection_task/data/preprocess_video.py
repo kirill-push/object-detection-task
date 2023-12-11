@@ -44,6 +44,24 @@ def read_annotations(annotation_path: str) -> Dict[str, List[List[int]]]:
     return annotations
 
 
+def get_labels(intervals: List[List[int]], video_length: int) -> List[int]:
+    """Get labels list from intervals
+
+    Args:
+        intervals (List[List[int]]): Intervals from video.
+        video_length (int): Video length.
+
+    Returns:
+        List[int]: List of labels with 0 or 1 according to intervals.
+    """
+    labels = [0] * video_length
+    for interval in intervals:
+        start, end = interval
+        for i in range(start, end + 1):
+            labels[i] = 1
+    return labels
+
+
 def label_frames(
     frames: List[np.ndarray],
     intervals: Optional[List[List[int]]],
@@ -254,3 +272,14 @@ def recalculate_polygon_coordinates(
         recalculated_polygon.append([new_x, new_y])
 
     return recalculated_polygon
+
+
+def safe_dict_to_json(any_dict: Dict, path_to_file: str) -> None:
+    """Save dictionary to JSON
+
+    Args:
+        any_dict (Dict): Any dictionary.
+        path_to_file (str): Saving path.
+    """
+    with open(path_to_file, "w") as file:
+        json.dump(any_dict, file)
