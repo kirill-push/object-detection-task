@@ -207,7 +207,7 @@ def find_threshold(
         on the maximum F1-score.
 
     Args:
-        detections_data (str): Path to JSON with raw detections for all videos.
+        detections_file_path (str): Path to JSON with raw detections for all videos.
         vehicle_class_ids (Set[int]): A set of class IDs to be considered as vehicles.
 
     Returns:
