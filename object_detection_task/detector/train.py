@@ -231,3 +231,19 @@ def find_threshold(
             best_threshold_key = threshold_key
 
     return best_threshold_key, max_f1_score
+
+
+if __name__ == "__main__":
+    # Loading the uploaded files
+    classes_file_path = "/resources/classes.json"
+    detections_file_path = "/resources/detections_dict.json"
+
+    # Reading the detection data
+    with open(detections_file_path, "r") as file:
+        detections_data = json.load(file)
+
+    # Reading the class data
+    with open(classes_file_path, "r") as file:
+        classes_data = json.load(file)
+
+    best_threshold_key, max_f1_score = find_threshold(detections_data)
