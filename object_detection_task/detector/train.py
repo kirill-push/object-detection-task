@@ -200,22 +200,24 @@ def calculate_global_metrics(
 
 
 def find_threshold(
-    detections_data: Dict[
-        str, Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]
-    ],
+    detections_file_path: str,
     vehicle_class_ids: List[int] = [0, 1, 2, 3, 4, 5, 7, 28],
 ) -> Tuple[Optional[Tuple[float, float]], float]:
     """Finds the best intersection and confidence thresholds for vehicle detection based
         on the maximum F1-score.
 
     Args:
-        detections_data (Dict[str, Dict[int, Dict]]): Raw detections for all videos.
+        detections_data (str): Path to JSON with raw detections for all videos.
         vehicle_class_ids (Set[int]): A set of class IDs to be considered as vehicles.
 
     Returns:
         Tuple[Optional[Tuple[float, float]], float]: A tuple containing the best
             threshold pair and the maximum F1-score.
     """
+    # Reading the detection data
+    with open(detections_file_path, "r") as file:
+        detections_data = json.load(file)
+
     # Filter the detections data to include only vehicle objects
     filtered_detections_data = filter_vehicles(detections_data, vehicle_class_ids)
     global_threshold_metrics = calculate_global_metrics(filtered_detections_data)
@@ -233,16 +235,5 @@ def find_threshold(
     return best_threshold_key, max_f1_score
 
 
-def main() -> Tuple[Optional[Tuple[float, float]], float]:
-    # Loading the uploaded files
-    detections_file_path = "/resources/detections_dict.json"
-
-    # Reading the detection data
-    with open(detections_file_path, "r") as file:
-        detections_data = json.load(file)
-
-    return find_threshold(detections_data)
-
-
 if __name__ == "__main__":
-    print(main())
+    print(find_threshold("/resources/detections_dict.json"))
