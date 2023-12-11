@@ -132,12 +132,12 @@ def check_intersection(
     return result_detections
 
 
-def process_one_video_frames(
+def process_one_video(
     model: torch.nn.Module,
     video_name: str,
     video_dir_path: str,
     polygon: List[List[int]],
-    intervals: List[List[int]],
+    intervals: Optional[List[List[int]]],
 ) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
     """Processes all frames of one video, detecting objects and calculating
         intersections with a polygon.
@@ -147,7 +147,8 @@ def process_one_video_frames(
         video_name (str): Name of video.
         video_dir_path (str): Path to directory with videos.
         polygon (List[List[int]]): Polygon for video_name.
-        intervals (List[List[int]]): Intervals for video_name.
+        intervals (List[List[int]] | None): Intervals for video_name. For predict mode
+            use intervals=None.
 
     Returns:
         Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]: Dictionary with
@@ -236,7 +237,7 @@ def process_all_video(
     for video in video_list:
         intervals = intervals_data[video]
         polygon = polygons_data[video]
-        processed_frames = process_one_video_frames(
+        processed_frames = process_one_video(
             model,
             video_name=video,
             video_dir_path=video_dir_path,
@@ -249,7 +250,7 @@ def process_all_video(
 
 if __name__ == "__main__":
     # Create parser and initialize arguments
-    parser = argparse.ArgumentParser(description="Process videos.")
+    parser = argparse.ArgumentParser(description="Detect objects on videos")
     parser.add_argument("--val", default=None, help="The video to validate")
     parser.add_argument(
         "--path", default="resources", help="Path to the resources directory"
