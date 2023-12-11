@@ -137,7 +137,7 @@ def process_one_video_frames(
     video_name: str,
     video_dir_path: str,
     polygon: List[List[int]],
-    intervals: List[List[int]],
+    intervals: Optional[List[List[int]]],
 ) -> Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]:
     """Processes all frames of one video, detecting objects and calculating
         intersections with a polygon.
@@ -147,7 +147,8 @@ def process_one_video_frames(
         video_name (str): Name of video.
         video_dir_path (str): Path to directory with videos.
         polygon (List[List[int]]): Polygon for video_name.
-        intervals (List[List[int]]): Intervals for video_name.
+        intervals (List[List[int]] | None): Intervals for video_name. For predict mode
+            use intervals=None.
 
     Returns:
         Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]: Dictionary with
