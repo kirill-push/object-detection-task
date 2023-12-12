@@ -16,15 +16,15 @@ from object_detection_task.data.preprocess_video import (
 
 
 class ObjectDetector:
-    def __init__(self, model_name: str = "yolov5n6"):
+    def __init__(self, model_name: str = "yolov5x6"):
         self.model_name = model_name
         self.model = self.load_pretrained_yolov5(self.model_name)
 
-    def load_pretrained_yolov5(self, model_name: str = "yolov5n6") -> nn.Module:
+    def load_pretrained_yolov5(self, model_name: str = "yolov5x6") -> nn.Module:
         """Load a pretrained YOLOv5 model.
 
         Args:
-        model_name (str): Name of the YOLOv5 model to be loaded. Default is 'yolov5n6'.
+        model_name (str): Name of the YOLOv5 model to be loaded. Default is 'yolov5x6'.
             Available models are 'yolov5s', 'yolov5m', 'yolov5l', 'yolov5x'.
             The 's', 'm', 'l', and 'x' variants represent small, medium, large, and
             extra-large models respectively.
