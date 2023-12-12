@@ -1,26 +1,20 @@
 import argparse
 import json
-import os
 from typing import Dict, List
 
-from object_detection_task.data.preprocess_video import read_annotations
-from object_detection_task.detector.object_detector import (
-    load_pretrained_yolov5,
-    process_one_video,
-)
+from object_detection_task.data.preprocess_video import VideoDataManager
+from object_detection_task.detector.detect_objects import ObjectDetector
 from object_detection_task.detector.train import predict_vehicle_in_video
 
 
 def predict(
-    video_path: str,
-    polygons_path: str,
+    video_manager: VideoDataManager,
     thresholds_path: str = "resources/thresholds.json",
 ) -> Dict[str, int]:
     """Makes oredictions for one video.
 
     Args:
-        video_path (str): Path to video which we want to process.
-        polygons_path (str): Path to JSON with boundaries for this video.
+        video_manager (VideoDataManager): Video data manager for predict video.
         thresholds_path (str): Path to JSON file with thresholds.
 
     Returns:
@@ -32,25 +26,11 @@ def predict(
     intersection_threshold = thresholds_dict["intersection_threshold"]
     confidence_threshold = thresholds_dict["confidence_threshold"]
 
-    # Init model
-    model = load_pretrained_yolov5("yolov5x6")
-
-    # Prepare args to process func
-    video_dir_path = os.path.dirname(video_path)
-    video_name = os.path.basename(video_path)
-    polygons_data = read_annotations(polygons_path)
-    if isinstance(polygons_data, Dict):
-        polygon = polygons_data[video_name]
-    else:
-        raise ValueError("polygons.json should store dict with key video_name")
+    detector = ObjectDetector()
 
     # Detect objects on video
-    frame_detection = process_one_video(
-        model=model,
-        video_name=video_name,
-        video_dir_path=video_dir_path,
-        polygon=polygon,
-        intervals=None,
+    frame_detection = detector.process_one_video(
+        video_manager=video_manager,
     )
 
     # Process detector data to prediction
@@ -78,10 +58,10 @@ def make_intervals(predictions: Dict[str, int]) -> List[List[int]]:
     sorted_keys = sorted(predictions.keys(), key=lambda x: int(x))
 
     for frame in sorted_keys:
-        if predictions[str(frame)] == 1 and start_frame is None:
+        if predictions[frame] == 1 and start_frame is None:
             # Start of a new interval
             start_frame = int(frame)
-        elif predictions[str(frame)] == 0 and start_frame is not None:
+        elif predictions[frame] == 0 and start_frame is not None:
             # End of the current interval
             intervals.append([start_frame, int(frame) - 1])
             start_frame = None
@@ -95,7 +75,11 @@ def make_intervals(predictions: Dict[str, int]) -> List[List[int]]:
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Predict intervals from video")
-    parser.add_argument("--video_path", help="Path to video which we want to process")
+    parser.add_argument(
+        "--video_path",
+        nargs="+",
+        help="Path to one or few videos which we want to process",
+    )
     parser.add_argument(
         "--polygon_path", help="Path to JSON with boundaries for this video"
     )
@@ -115,13 +99,19 @@ if __name__ == "__main__":
     output_path = args.output_path
     thresholds_path = args.thresholds_path
 
-    intervals = make_intervals(
-        predict(
-            video_path=video_path,
-            polygons_path=polygon_path,
-            thresholds_path=thresholds_path,
+    if isinstance(video_path, str):
+        video_path = [video_path]
+    intervals = {}
+    for one_video_path in video_path:
+        video_manager = VideoDataManager(one_video_path, None, polygon_path)
+        video_name = video_manager.video_name
+        one_video_intervals = make_intervals(
+            predict(
+                video_manager=video_manager,
+                thresholds_path=thresholds_path,
+            )
         )
-    )
+        intervals[video_name] = one_video_intervals
 
     # Save intervals to JSON
     with open(output_path, "w") as file:
