@@ -58,19 +58,18 @@ def predict_car_presence_with_metrics(
         car_intervals.append(current_interval)
 
     # Calculating metrics
-    precision = precision_score(true_labels, predicted_labels)
-    recall = recall_score(true_labels, predicted_labels)
-    f1 = f1_score(true_labels, predicted_labels)
+    precision = precision_score(true_labels, predicted_labels, zero_division=1)
+    recall = recall_score(true_labels, predicted_labels, zero_division=1)
+    f1 = f1_score(true_labels, predicted_labels, zero_division=1)
 
     metrics = {
-        "threshold": threshold,
         "precision": precision,
         "recall": recall,
         "f1_score": f1,
     }
     if not intervals:
         car_intervals = []
-    return metrics, car_intervals
+    return metrics, car_intervals  # type: ignore
 
 
 def find_best_threshold(
