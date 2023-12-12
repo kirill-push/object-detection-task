@@ -142,3 +142,4 @@ resources/*
 !resources/val_intervals.json
 !resources/metrics_val.json
 notebooks/
+yolov5x6.pt
