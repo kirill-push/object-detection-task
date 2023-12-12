@@ -239,7 +239,7 @@ if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Detect objects on videos")
     parser.add_argument(
-        "--video_to_val", default=None, help="Name of video to validate"
+        "--video_to_val", nargs="+", default=None, help="List of videos to validate"
     )
     parser.add_argument(
         "--path_to_resources",
@@ -254,13 +254,19 @@ if __name__ == "__main__":
     video_to_val = args.video_to_val
     path_to_resources = args.path_to_resources
 
+    if video_to_val is not None and not isinstance(video_to_val, List):
+        video_to_val = [video_to_val]
     intervals_data_path = os.path.join(path_to_resources, "time_intervals.json")
     polygons_data_path = os.path.join(path_to_resources, "polygons.json")
     video_dir_path = os.path.join(path_to_resources, "videos")
+
+    # Video 16 and video 17 are copies (same or in worse quality) of video 4 and 3
+    video_to_del = ["video_16.mp4", "video_17.mp4"]
+
     video_list = [  # TODO use train_test_split
         video
         for video in AnnotationManager(polygons_data_path, "polygons").video_list
-        if video != video_to_val
+        if video not in video_to_val and video not in video_to_del
     ]
     detector = ObjectDetector()
     # Process videos and detect objects
@@ -277,15 +283,15 @@ if __name__ == "__main__":
         json.dump(detections, file)
 
     if video_to_val is not None:
+        if not isinstance(video_to_val, List):
+            video_to_val = [video_to_val]
         detections_val = detector.process_all_video(
-            video_list=[video_to_val],
+            video_list=video_to_val,
             intervals_data_path=intervals_data_path,
             polygons_data_path=polygons_data_path,
             video_dir_path=video_dir_path,
         )
         # Save detection results to JSON
-        output_val = os.path.join(
-            path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json"
-        )
+        output_val = os.path.join(path_to_resources, "detections_dict_val.json")
         with open(output_val, "w") as file:
             json.dump(detections_val, file)
