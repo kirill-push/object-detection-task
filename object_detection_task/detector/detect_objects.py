@@ -41,6 +41,7 @@ class ObjectDetector:
             model_name,
             force_reload=True,
             _verbose=False,
+            trust_repo=True,
         )  # type: ignore
 
         return model.eval().to(device)
