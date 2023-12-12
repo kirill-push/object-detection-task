@@ -228,8 +228,9 @@ class VideoDataManager:
         # Find the bounding rectangle of the polygon and add padding
         x, y, w, h = cv2.boundingRect(points)
         x, y = max(0, x - left), max(0, y - up)
-        w, h = min(frame.shape[1] - x, w + right + left), min(
-            frame.shape[0] - y, h + up + down
+        w, h = (
+            min(frame.shape[1] - x, w + right + left),
+            min(frame.shape[0] - y, h + up + down),
         )
 
         if min_square:
@@ -289,8 +290,9 @@ class VideoDataManager:
         points = np.array(original_polygon)
         x0, y0, w0, h0 = cv2.boundingRect(points)
         x0, y0 = max(0, x0 - left), max(0, y0 - up)
-        w, h = min(original_frame_size[1] - x0, w0 + right + left), min(
-            original_frame_size[0] - y0, h0 + up + down
+        w, h = (
+            min(original_frame_size[1] - x0, w0 + right + left),
+            min(original_frame_size[0] - y0, h0 + up + down),
         )
 
         # Recalculate coordinates to be relative to the bounding rectangle

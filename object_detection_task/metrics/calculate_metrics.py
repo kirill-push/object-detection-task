@@ -1,7 +1,7 @@
 import argparse
 from typing import Dict
 
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 from object_detection_task.data.preprocess_video import (
     VideoDataManager,
@@ -32,9 +32,8 @@ def compute_metrics(
         "recall": recall_score(labels, predictions, zero_division=1),
         "f1": f1_score(labels, predictions, zero_division=1),
         "precision": precision_score(labels, predictions, zero_division=1),
-        "accuracy": accuracy_score(labels, predictions),
     }
-    return metrics_dict
+    return metrics_dict  # type: ignore
 
 
 if __name__ == "__main__":

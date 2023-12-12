@@ -75,7 +75,11 @@ def make_intervals(predictions: Dict[str, int]) -> List[List[int]]:
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Predict intervals from video")
-    parser.add_argument("--video_path", help="Path to video which we want to process")
+    parser.add_argument(
+        "--video_path",
+        nargs="+",
+        help="Path to one or few videos which we want to process",
+    )
     parser.add_argument(
         "--polygon_path", help="Path to JSON with boundaries for this video"
     )
