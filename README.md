@@ -63,7 +63,7 @@ With Poetry installed, you can now install the project's dependencies.
    poetry shell
    ```
 
-2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `train.py` script is located:
+2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `detect_objects.py` script is located:
    ```
    cd object_detection_task/detector
    ```
