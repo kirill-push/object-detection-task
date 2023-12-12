@@ -1,16 +1,16 @@
 import argparse
 import json
 import os
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 import numpy as np
 from sklearn.metrics import (
     accuracy_score,
-    confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
 )
+from tqdm import tqdm
 
 
 def filter_vehicles(
@@ -65,10 +65,10 @@ def predict_vehicle_presence_sorted(
     Args:
         frame_data (Dict[str, List[Dict[str, Union[float, int]]]]): Data for a single
             frame, containing 'label' and 'detector_result'.
-        intersection_threshold (float): Minimum proportion of intersection to consider
-            a detection significant.
-        confidence_threshold (float): Minimum confidence level to consider a detection
-            reliable.
+        intersection_threshold (float, optional): Minimum proportion of intersection to
+            consider a detection significant. Defaults to 0.25
+        confidence_threshold (float, optional): Minimum confidence level to consider a
+            detection reliable. Defaults to 0.3
 
     Returns:
         int: 1 if a vehicle is predicted to be present in the frame, 0 otherwise.
@@ -103,10 +103,10 @@ def predict_vehicle_in_video(
     Args:
         video_data (Dict[str, Dict[str, List[Dict]]]): The data for a single video,
             containing frame data.
-        intersection_threshold (float): The minimum proportion of intersection to
-            consider a detection significant.
-        confidence_threshold (float): The minimum confidence level to consider a
-            detection reliable.
+        intersection_threshold (float, optional): Minimum proportion of intersection to
+            consider a detection significant. Defaults to 0.25
+        confidence_threshold (float, optional): Minimum confidence level to consider a
+            detection reliable. Defaults to 0.3
 
     Returns:
         Dict[str, int]: A dictionary with frame numbers as keys and vehicle presence
@@ -123,8 +123,7 @@ def predict_vehicle_in_video(
 def calculate_metrics(
     actual_labels: List[int], predicted_labels: List[int]
 ) -> Dict[str, float]:
-    """Calculate F1-score, Recall, Accuracy, Precision, and False Positive Rate (FPR)
-        based on actual and predicted labels.
+    """Calculate F1-score, Recall, Accuracy, Precision, based on actual and predicted labels.
 
     Args:
         actual_labels (List[int]): The actual labels for each frame in the video.
@@ -136,28 +135,19 @@ def calculate_metrics(
     y_true = np.array(actual_labels)
     y_pred = np.array(predicted_labels)
 
-    class_weights = np.where(
-        y_true == 1,
-        np.sum(y_true == 0) / np.sum(y_true == 1),
-        np.sum(y_true == 1) / np.sum(y_true == 0),
-    )
-    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
-    fpr_score = fp / (fp + tn) if (fp + tn) > 0 else 0
-
     metrics = {
         "f1_score": f1_score(y_true, y_pred, zero_division=1),
         "recall": recall_score(y_true, y_pred, zero_division=1),
-        "accuracy": accuracy_score(y_true, y_pred, sample_weight=class_weights),
+        "accuracy": accuracy_score(y_true, y_pred),
         "precision": precision_score(y_true, y_pred, zero_division=1),
-        "fpr": fpr_score,
     }
     return metrics
 
 
 def calculate_global_metrics(
     filtered_detections_data: Dict[str, Dict[str, Dict[str, List[Dict]]]],
-    num_intersection_thresholds: int = 30,
-    num_confidence_thresholds: int = 30,
+    num_intersection_thresholds: int = 50,
+    num_confidence_thresholds: int = 50,
 ) -> Dict[Tuple[float, float], Dict[str, float]]:
     """Calculate global metrics by aggregating all predictions and labels across videos
         for different thresholds.
@@ -204,7 +194,7 @@ def calculate_global_metrics(
 def find_threshold(
     detections_file_path: str,
     vehicle_class_ids: List[int] = [0, 1, 2, 3, 4, 5, 7, 28],
-) -> Tuple[Optional[Tuple[float, float]], float]:
+) -> Tuple[Tuple[float, float], float]:
     """Finds the best intersection and confidence thresholds for vehicle detection based
         on the maximum F1-score.
 
@@ -225,15 +215,15 @@ def find_threshold(
     global_threshold_metrics = calculate_global_metrics(filtered_detections_data)
 
     max_f1_score = 0.0
-    best_threshold_key = None
+    best_threshold_key = (-1., -1.)
 
     # Iterate through global metrics to find the best threshold based on max F1-score
-    for threshold_key, video_metrics in global_threshold_metrics.items():
+    for threshold_key, video_metrics in tqdm(global_threshold_metrics.items()):
         f1 = video_metrics["f1_score"]
         if f1 > max_f1_score:  # Update if a higher F1-score is found
             max_f1_score = f1
             best_threshold_key = threshold_key
-
+    print(f'Best thresholds, intersection {best_threshold_key[0]}, confidence {best_threshold_key[1]}, best f1 {max_f1_score}')
     return best_threshold_key, max_f1_score
 
 
