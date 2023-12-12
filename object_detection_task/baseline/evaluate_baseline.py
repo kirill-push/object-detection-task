@@ -187,5 +187,5 @@ if __name__ == "__main__":
         metrics, _ = predict_car_presence_with_metrics(
             variance_dict_vals, best_threshold, False
         )
-        with open(os.path.join(path_to_resources, "baseline_metrics.json"), "w") as f:
+        with open(os.path.join(path_to_resources, "baseline_metrics_val.json"), "w") as f:
             json.dump(metrics, f)
