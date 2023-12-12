@@ -65,7 +65,7 @@ With Poetry installed, you can now install the project's dependencies.
 
 2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `train.py` script is located:
    ```
-   cd detector
+   cd object_detection_task/detector
    ```
 
 3. **Running the Script**: The `detect_objects.py` script has two primary arguments:
@@ -103,7 +103,7 @@ With Poetry installed, you can now install the project's dependencies.
 
 2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `train.py` script is located:
    ```
-   cd detector
+   cd object_detection_task/detector
    ```
 
 3. **Running the Script**: The `train.py` script accepts the following arguments:
@@ -143,7 +143,7 @@ With Poetry installed, you can now install the project's dependencies.
 
 2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `run_detector.py` script is located:
    ```
-   cd detector
+   cd object_detection_task/detector
    ```
 
 3. **Run the Script**: The `run_detector.py` script accepts the following arguments:
@@ -183,7 +183,7 @@ With Poetry installed, you can now install the project's dependencies.
 
 2. **Navigate to the Metrics Directory**: Change to the `metrics` directory where the `calculate_metrics.py` script is located:
    ```
-   cd metrics
+   cd object_detection_task/metrics
    ```
 
 3. **Run the Script**: The `calculate_metrics.py` script requires several arguments:
