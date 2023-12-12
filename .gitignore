@@ -141,5 +141,6 @@ resources/*
 !resources/video_7_metrics.json
 !resources/val_intervals.json
 !resources/metrics_val.json
+!resources/baseline_metrics.json
 notebooks/
 yolov5x6.pt
