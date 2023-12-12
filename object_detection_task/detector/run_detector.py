@@ -76,15 +76,18 @@ if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Predict intervals from video")
     parser.add_argument(
+        "-v",
         "--video_path",
         nargs="+",
         help="Path to one or few videos which we want to process",
     )
     parser.add_argument(
+        "-p",
         "--polygon_path", help="Path to JSON with boundaries for this video"
     )
-    parser.add_argument("--output_path", help="Path to JSON file to save results")
+    parser.add_argument("-o", "--output_path", help="Path to JSON file to save results")
     parser.add_argument(
+        "-t."
         "--thresholds_path",
         default="resources/thresholds.json",
         help="Path to JSON file to save results",

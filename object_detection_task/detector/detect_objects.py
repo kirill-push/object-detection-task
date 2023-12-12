@@ -239,12 +239,19 @@ if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Detect objects on videos")
     parser.add_argument(
-        "--video_to_val", nargs="+", default=None, help="List of videos to validate"
+        "-v",
+        "--video_to_val",
+        nargs="+",
+        default=None,
+        help=f"One video name or list of video names to validate. 
+        If None, then all videos from path_to_resources go to train.",
     )
     parser.add_argument(
+        "-r",
         "--path_to_resources",
         default="resources",
-        help="Path to the resources directory",
+        help=f"Path to the resources directory with time_intervals.json 
+        and polygons.json files and directory videos",
     )
 
     # Collect arguments

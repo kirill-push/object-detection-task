@@ -277,25 +277,28 @@ def validate_videos(
 
 if __name__ == "__main__":
     # Create parser and initialize arguments
-    parser = argparse.ArgumentParser(description="Process videos.")
+    parser = argparse.ArgumentParser(description="Find best thresolds.")
     parser.add_argument(
-        "--path_to_resources",
-        default="resources",
-        help="Path to the resources directory",
-    )
-    parser.add_argument(
+        "-v",
         "--video_to_val",
         nargs="+",
         default=None,
         help="Video name or list of video names, which was used for validation",
+    )
+    parser.add_argument(
+        "-r",
+        "--path_to_resources",
+        default="resources",
+        help="Path to the resources directory with intervals and polygons JSON files.",
     )
 
     # Collect arguments
     args = parser.parse_args()
 
     # Use collected arguments
-    path_to_resources = args.path_to_resources
     video_to_val = args.video_to_val
+    path_to_resources = args.path_to_resources
+    
     detection_dict_path = os.path.join(path_to_resources, "detections_dict.json")
 
     threshold_json_path = os.path.join(path_to_resources, "thresholds.json")
