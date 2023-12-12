@@ -155,8 +155,8 @@ def process_all_videos(
     video_list: Optional[List[str]] = None,
     min_square: bool = True,
 ) -> Dict[Tuple[str, int], Tuple[float, int]]:
-    """Process all videos in the list to calculate brightness variances,
-        label them, and visualize the combined variance data.
+    """Process all videos in the list to calculate brightness variances and
+        label them.
 
     Args:
         path_to_video_dir (str): The video dir path.
