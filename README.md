@@ -2,9 +2,7 @@ Sure, here's a sample instruction guide for starting a project using Poetry:
 
 ---
 
-# Getting Started with Your Project Using Poetry
-
-This guide will help you set up and start working on a project that uses Poetry for dependency management. Make sure you have Python version 3.8 or higher installed on your system.
+# Getting Started with Project
 
 ## Step 1: Clone the Repository
 
