@@ -134,5 +134,11 @@ cython_debug/
 .vscode/
 
 # task data
-resources/
+resources/*
+!resources/thresholds.json
+!resources/video_3_metrics.json
+!resources/video_5_metrics.json
+!resources/video_7_metrics.json
+!resources/val_intervals.json
+!resources/metrics_val.json
 notebooks/
