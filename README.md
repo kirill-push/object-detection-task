@@ -3,12 +3,23 @@
 
 # Table of Contents
 1. [Activate Poetry Environment](#activate-poetry-environment)
-2. [Running the detect_objects.py Script](#running-the-detect_objectspy-script)
-3. [Output of detect_objects.py](#output-of-detect_objectspy)
-4. [Running the evaluate_baseline.py Script](#running-the-evaluate_baselinepy-script)
-5. [Output of evaluate_baseline.py](#output-of-evaluate_baselinepy)
+   - [Step 1: Clone the Repository](#step-1-clone-the-repository)
+   - [Step 2: Install Poetry](#step-2-install-poetry)
+   - [Step 3: Install Dependencies Using Poetry](#step-3-install-dependencies-using-poetry)
+   - [Step 4: Verify Your Setup](#step-4-verify-your-setup)
+2. [Baseline](#baseline)
+   - [Running the evaluate_baseline.py Script](#running-the-evaluate_baselinepy-script)
+3. [Detector](#detector)
+   - [Running the detect_objects.py Script](#running-the-detect_objectspy-script)
+   - [Running the train.py Script](#running-the-trainpy-script)
+   - [Running the run_detector.py Script](#running-the-run_detectorpy-script)
+4. [Metrics](#metrics)
+   - [Running the calculate_metrics.py Script](#running-the-calculate_metricspy-script)
+5. [Fixing Problems with Project Initialization](#fixing-problems-with-project-initialization)
+   - [Fixing OpenCV cv2 ImportError on Linux](#fixing-opencv-cv2-importerror-on-linux)
 
-# Getting Started with Project
+
+# Activate Poetry Environment
 
 ## Step 1: Clone the Repository
 
@@ -241,6 +252,7 @@ Certainly! Below is a concise and clear README instruction in English to address
 
 ---
 
+# Fixing problems with project initialization
 ## Fixing OpenCV `cv2` ImportError on Linux
 
 If you encounter the following error while using the `cv2` module in the OpenCV library:
