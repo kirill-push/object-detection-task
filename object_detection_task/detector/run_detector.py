@@ -86,7 +86,8 @@ if __name__ == "__main__":
     )
     parser.add_argument("-o", "--output_path", help="Path to JSON file to save results")
     parser.add_argument(
-        "-t." "--thresholds_path",
+        "-t,",
+        "--thresholds_path",
         default="resources/thresholds.json",
         help="Path to JSON file to save results",
     )
