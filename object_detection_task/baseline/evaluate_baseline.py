@@ -63,9 +63,9 @@ def predict_car_presence_with_metrics(
     f1 = f1_score(true_labels, predicted_labels)
 
     metrics = {
-        "precision": precision,
-        "recall": recall,
         "f1_score": f1,
+        "recall": recall,
+        "precision": precision,
     }
     if not intervals:
         car_intervals = []
