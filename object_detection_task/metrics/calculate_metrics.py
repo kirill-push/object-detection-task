@@ -50,7 +50,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-p", "--polygons_path", help="Path to JSON with boundaries for this video"
     )
-    parser.add_argument("--output_path", help="Path to JSON file to save results")
+    parser.add_argument("-o", "--output_path", help="Path to JSON file to save results")
     parser.add_argument(
         "-t",
         "--thresholds_path",
