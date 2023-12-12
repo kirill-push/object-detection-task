@@ -227,6 +227,55 @@ def find_threshold(
     return best_threshold_key, max_f1_score
 
 
+def validate_one_video(
+        detections_val_path: str,
+        vehicle_class_ids: List[int] =  [0, 1, 2, 3, 4, 5, 7, 28],
+        intersection_threshold: float = 0.25,
+        confidence_threshold: float = 0.3,
+    ) -> Dict[str, float]:
+    """Validates one video and calculates metrics
+
+    Args:
+        detections_val_path (str): Path to detections data for validation video.
+        vehicle_class_ids (List[int], optional): A list of class IDs that are considered
+            as vehicles. Defaults to [0, 1, 2, 3, 4, 5, 7, 28].
+        intersection_threshold (float, optional): Minimum proportion of intersection to
+            consider a detection significant. Defaults to 0.25
+        confidence_threshold (float, optional): Minimum confidence level to consider a
+            detection reliable. Defaults to 0.3
+    Returns:
+        Dict[str, float]: _description_
+    """
+    # read validation data
+    # Reading the detection data
+    with open(detections_val_path, "r") as file:
+        detections_data = json.load(file)
+    # filter vehicles
+    filtered_detections_data = filter_vehicles(
+        detections_data,
+        vehicle_class_ids
+    )
+    video_data = list(filtered_detections_data.values())[0]
+    # predict vehicles in video
+    predictions = predict_vehicle_in_video(
+        video_data,
+        intersection_threshold,
+        confidence_threshold,
+    )
+    # prepare true and predict labels
+    actual_labels = []
+    predicted_labels = []
+    for frame, predict_label in predictions.items():
+        actual_labels.append(video_data[frame]['label'])
+        predicted_labels.append(predict_label)
+    
+    metrics = calculate_metrics(
+        actual_labels,
+        predicted_labels,
+    )
+
+    return metrics
+
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Process videos.")
