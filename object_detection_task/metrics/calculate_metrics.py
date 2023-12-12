@@ -40,16 +40,19 @@ if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Calculate metrics for video")
     parser.add_argument(
-        "--video_path", help="Path to video for which we want to calculate metrics"
+        "-v",
+        "--video_path",
+        help="Path to video for which we want to calculate metrics",
     )
     parser.add_argument(
-        "--intervals_path", help="Path to JSON with intervals for this video"
+        "-i", "--intervals_path", help="Path to JSON with intervals for this video"
     )
     parser.add_argument(
-        "--polygons_path", help="Path to JSON with boundaries for this video"
+        "-p", "--polygons_path", help="Path to JSON with boundaries for this video"
     )
     parser.add_argument("--output_path", help="Path to JSON file to save results")
     parser.add_argument(
+        "-t",
         "--thresholds_path",
         default="resources/thresholds.json",
         help="Path to JSON file to save results",

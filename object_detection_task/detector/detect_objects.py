@@ -243,15 +243,13 @@ if __name__ == "__main__":
         "--video_to_val",
         nargs="+",
         default=None,
-        help=f"One video name or list of video names to validate. 
-        If None, then all videos from path_to_resources go to train.",
+        help="One video name or list of video names to validate.",
     )
     parser.add_argument(
         "-r",
         "--path_to_resources",
         default="resources",
-        help=f"Path to the resources directory with time_intervals.json 
-        and polygons.json files and directory videos",
+        help="Path to the resources directory.",
     )
 
     # Collect arguments

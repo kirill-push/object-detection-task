@@ -298,7 +298,7 @@ if __name__ == "__main__":
     # Use collected arguments
     video_to_val = args.video_to_val
     path_to_resources = args.path_to_resources
-    
+
     detection_dict_path = os.path.join(path_to_resources, "detections_dict.json")
 
     threshold_json_path = os.path.join(path_to_resources, "thresholds.json")
