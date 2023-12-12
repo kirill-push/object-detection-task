@@ -280,7 +280,10 @@ if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Process videos.")
     parser.add_argument(
-        "--path", default="resources", help="Path to the resources directory"
+        "--path_to_resources", default="resources", help="Path to the resources directory"
+    )
+    parser.add_argument(
+        "--video_to_val", default=None, help="Video name, which was used for validation"
     )
 
     # Collect arguments
@@ -288,15 +291,26 @@ if __name__ == "__main__":
 
     # Use collected arguments
     path_to_resources = args.path_to_resources
+    video_to_val = args.video_to_val
     detection_dict_path = os.path.join(path_to_resources, "detections_dict.json")
+
     threshold_json_path = os.path.join(path_to_resources, "thresholds.json")
-
     thresholds_result = find_threshold(detection_dict_path)
-
     threshold_dict_to_save = {
-        "intersection_threshold": thresholds_result[0],
-        "confidence_threshold": thresholds_result[1],
+        "intersection_threshold": thresholds_result[0][0],
+        "confidence_threshold": thresholds_result[0][1],
     }
     # Save detection results to JSON
     with open(threshold_json_path, "w") as file:
         json.dump(threshold_dict_to_save, file)
+    
+    if video_to_val is not None:
+        detection_dict_val_path = os.path.join(path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json")
+        validation_metrics = validate_one_video(
+            detections_val_path=detection_dict_val_path,
+            intersection_threshold=thresholds_result[0][0],
+            confidence_threshold=thresholds_result[0][1],
+        )
+        val_metrics_path = os.path.join(path_to_resources, "metrics_val.json")
+        with open(val_metrics_path, "w") as file:
+            json.dump(validation_metrics, file)
