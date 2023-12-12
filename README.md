@@ -71,16 +71,16 @@ With Poetry installed, you can now install the project's dependencies.
 3. **Running the Script**: The `detect_objects.py` script has two primary arguments:
 
    - `-v` or `--video_to_val`: One video name or list of video names to validate.
-   - `-p` or `--path_to_resources`: Path to the resources directory.
+   - `-r` or `--path_to_resources`: Path to the resources directory.
 
    To run the script, use a command in the following format:
    ```
-   python detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-p path/to/resources]
+   python detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
    ```
 
    Example:
    ```
-   python detect_objects.py -v video_1.mp4 video_2.mp4 -p resources
+   python detect_objects.py -v video_1.mp4 video_2.mp4 -r resources
    ```
 
    This command will run the object detection on the specified videos using the resources from the given path.
@@ -113,7 +113,7 @@ With Poetry installed, you can now install the project's dependencies.
 
    To run the script, use a command in the following format:
    ```
-   poetry run python train.py [-v video_1.mp4 video_2.mp4 ...] [-p path/to/resources]
+   poetry run python train.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
    ```
 
    Example:
