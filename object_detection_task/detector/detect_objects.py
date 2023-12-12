@@ -262,6 +262,8 @@ if __name__ == "__main__":
 
     if video_to_val is not None and not isinstance(video_to_val, List):
         video_to_val = [video_to_val]
+    elif video_to_val is None:
+        video_to_val = []
     intervals_data_path = os.path.join(path_to_resources, "time_intervals.json")
     polygons_data_path = os.path.join(path_to_resources, "polygons.json")
     video_dir_path = os.path.join(path_to_resources, "videos")
@@ -269,7 +271,7 @@ if __name__ == "__main__":
     # Video 16 and video 17 are copies (same or in worse quality) of video 4 and 3
     video_to_del = ["video_16.mp4", "video_17.mp4"]
 
-    video_list = [  # TODO use train_test_split
+    video_list = [
         video
         for video in AnnotationManager(polygons_data_path, "polygons").video_list
         if video not in video_to_val and video not in video_to_del
