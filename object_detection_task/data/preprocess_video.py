@@ -311,6 +311,64 @@ class VideoDataManager:
 
         return self.recalculated_polygon
 
+    def draw_polygon_on_frame(
+        self,
+        n_frame: int,
+        crop: bool = True,
+        inplace: bool = False,
+        color: Tuple[int, int, int] = (0, 255, 0),
+        thickness: int = 2,
+        bbox: Optional[List[int]] = None,
+        bbox_color: Tuple[int, int, int] = (0, 0, 255),
+        bbox_thickness: int = 2,
+    ) -> np.ndarray:
+        """
+        Draws a polygon on the given frame.
+
+        Args:
+            nframe (int): Number of frame on which to draw the polygon.
+            crop (bool, optional): If crop is True, then returns cropped frame.
+                Defaults to True.
+            inplace (bool, optional): If inplace is True, then save result to
+                self.frames. Defaults to False.
+            color (Tuple[int, int, int]): The color of the polygon in BGR format.
+                Defaults to (0, 255, 0) (green).
+            thickness (int): The thickness of the polygon lines.
+                Defaults to 2.
+            bbox (List[int] | None): If bbox is not None, then draw it.
+                Coordinates of bbox = [x_min, y_min, x_max, y_max].
+                Defaults to None.
+            bbox_color (Tuple[int, int, int]): Color of the bounding box in BGR format.
+                Defaults to (0, 0, 255) (red).
+            bbox_thickness (int): Thickness of the bounding box lines.
+                Defaults to 1.
+        Returns:
+            np.ndarray: The frame with the polygon and optionally a bounding box drawn
+                on it.
+        """
+        if crop:
+            polygon = self.recalculate_polygon_coordinates()
+            frame = self.crop_polygon_from_frame(n_frame)
+        else:
+            polygon = self.polygon
+            frame = self.frames[n_frame]
+        pts = np.array(polygon, np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        new_frame = frame.copy()
+
+        # Draw the polygon on the frame
+        cv2.polylines(new_frame, [pts], isClosed=True, color=color, thickness=thickness)
+
+        # Draw the bbox if provided
+        if bbox is not None:
+            x_min, y_min, x_max, y_max = bbox
+            cv2.rectangle(
+                new_frame, (x_min, y_min), (x_max, y_max), bbox_color, bbox_thickness
+            )
+        if inplace:
+            self.frames[n_frame] = new_frame
+        return new_frame
+
 
 def safe_dict_to_json(any_dict: Dict, path_to_file: str) -> None:
     """Save dictionary to JSON
