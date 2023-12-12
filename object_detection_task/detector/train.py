@@ -227,13 +227,13 @@ def find_threshold(
     return best_threshold_key, max_f1_score
 
 
-def validate_one_video(
+def validate_videos(
     detections_val_path: str,
     vehicle_class_ids: List[int] = [0, 1, 2, 3, 4, 5, 7, 28],
     intersection_threshold: float = 0.25,
     confidence_threshold: float = 0.3,
 ) -> Dict[str, float]:
-    """Validates one video and calculates metrics
+    """Validates videos and calculates metrics
 
     Args:
         detections_val_path (str): Path to detections data for validation video.
@@ -254,17 +254,18 @@ def validate_one_video(
     filtered_detections_data = filter_vehicles(detections_data, vehicle_class_ids)
     video_data = list(filtered_detections_data.values())[0]
     # predict vehicles in video
-    predictions = predict_vehicle_in_video(
-        video_data,
-        intersection_threshold,
-        confidence_threshold,
-    )
-    # prepare true and predict labels
     actual_labels = []
     predicted_labels = []
-    for frame, predict_label in predictions.items():
-        actual_labels.append(video_data[frame]["label"])
-        predicted_labels.append(predict_label)
+    for video_data in filtered_detections_data.values():
+        predictions = predict_vehicle_in_video(
+            video_data,
+            intersection_threshold,
+            confidence_threshold,
+        )
+        # prepare true and predict labels
+        for frame, predict_label in predictions.items():
+            actual_labels.append(video_data[frame]["label"])
+            predicted_labels.append(predict_label)
 
     metrics = calculate_metrics(
         actual_labels,  # type: ignore
@@ -283,7 +284,10 @@ if __name__ == "__main__":
         help="Path to the resources directory",
     )
     parser.add_argument(
-        "--video_to_val", default=None, help="Video name, which was used for validation"
+        "--video_to_val",
+        nargs="+",
+        default=None,
+        help="Video name or list of video names, which was used for validation",
     )
 
     # Collect arguments
@@ -306,9 +310,9 @@ if __name__ == "__main__":
 
     if video_to_val is not None:
         detection_dict_val_path = os.path.join(
-            path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json"
+            path_to_resources, "detections_dict_val.json"
         )
-        validation_metrics = validate_one_video(
+        validation_metrics = validate_videos(
             detections_val_path=detection_dict_val_path,
             intersection_threshold=thresholds_result[0][0],
             confidence_threshold=thresholds_result[0][1],
