@@ -188,6 +188,6 @@ if __name__ == "__main__":
             variance_dict_vals, best_threshold, False
         )
         with open(
-            os.path.join(path_to_resources, "baseline_metrics_val.json"), "w"
+            os.path.join(path_to_resources, "baseline_metrics_test.json"), "w"
         ) as f:
             json.dump(metrics, f)

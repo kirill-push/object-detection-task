@@ -99,7 +99,7 @@ With Poetry installed, you can now install the project's dependencies.
 
    This command will run the baseline evaluation on the specified videos using the resources from the given path.
 
-3. **Output**: The script will evaluate the baseline on the videos and output the results in JSON format in the `baseline_metrics_val.json` file within the specified resources directory.
+3. **Output**: The script will evaluate the baseline on the videos and output the results in JSON format in the `baseline_metrics_test.json` file within the specified resources directory.
 
 ### Notes:
 
@@ -239,7 +239,7 @@ With Poetry installed, you can now install the project's dependencies.
 3. **Output**: The script performs the following operations:
    - Finds the best thresholds based on the detections in `detections_dict.json`.
    - Saves the calculated thresholds in `thresholds.json` within the resources directory.
-   - If validation videos are provided, it validates these videos using the calculated thresholds and saves the metrics in `metrics_val.json`.
+   - If validation videos are provided, it validates these videos using the calculated thresholds and saves the metrics in `detector_metrics_test.json`.
 
 ### Notes:
 

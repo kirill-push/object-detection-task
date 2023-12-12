@@ -320,6 +320,6 @@ if __name__ == "__main__":
             intersection_threshold=thresholds_result[0][0],
             confidence_threshold=thresholds_result[0][1],
         )
-        val_metrics_path = os.path.join(path_to_resources, "metrics_val.json")
+        val_metrics_path = os.path.join(path_to_resources, "detector_metrics_test.json")
         with open(val_metrics_path, "w") as file:
             json.dump(validation_metrics, file)
