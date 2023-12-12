@@ -108,7 +108,7 @@ With Poetry installed, you can now install the project's dependencies.
 
    Example:
    ```
-   python object_detection_task/detector/train.py -v video_1.mp4 video_2.mp4 -p resources
+   python object_detection_task/detector/train.py -v video_1.mp4 video_2.mp4 -r resources
    ```
 
    This will start the training process using the specified videos for validation and resources from the given path.
@@ -193,3 +193,34 @@ With Poetry installed, you can now install the project's dependencies.
 
 - Ensure that the paths to the video, intervals JSON file, polygons JSON file, output file, and thresholds (if not using default) are correctly specified.
 - The script is designed to work with one video at a time.
+
+
+Certainly! Below is a concise and clear README instruction in English to address the issue with the `cv2` module in your GitHub repository. You can add this to your README file:
+
+---
+
+## Fixing OpenCV `cv2` ImportError on Linux
+
+If you encounter the following error while using the `cv2` module in the OpenCV library:
+
+```
+ImportError: libGL.so.1: cannot open shared object file: No such file or directory
+```
+
+This indicates that the necessary OpenGL libraries are missing from your environment. Follow these steps to resolve the issue:
+
+### For Ubuntu/Debian-based Systems:
+
+1. **Update Package List**: Update your system's package list to ensure you can access the latest versions of packages.
+
+   ```bash
+   sudo apt-get update
+   ```
+
+2. **Install OpenGL Dependency**: Install the `libgl1` package which provides the `libGL.so.1` library.
+
+   ```bash
+   sudo apt-get install libgl1
+   ```
+
+---
