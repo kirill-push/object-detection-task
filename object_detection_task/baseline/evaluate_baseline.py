@@ -58,9 +58,9 @@ def predict_car_presence_with_metrics(
         car_intervals.append(current_interval)
 
     # Calculating metrics
-    precision = precision_score(true_labels, predicted_labels, zero_division=1)
-    recall = recall_score(true_labels, predicted_labels, zero_division=1)
-    f1 = f1_score(true_labels, predicted_labels, zero_division=1)
+    precision = precision_score(true_labels, predicted_labels)
+    recall = recall_score(true_labels, predicted_labels)
+    f1 = f1_score(true_labels, predicted_labels)
 
     metrics = {
         "precision": precision,
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         file_path_polygons,
         video_list,
     )
-    best_threshold = find_best_threshold(variance_dict_train, np.linspace(-0.5, 1, 20))
+    best_threshold = find_best_threshold(variance_dict_train)
 
     if len(video_to_val) != 0:
         variance_dict_vals = process_all_videos(
