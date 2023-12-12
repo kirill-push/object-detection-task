@@ -54,12 +54,12 @@ class ObjectDetector:
 
         Args:
             frame (np.ndarray): The prepared frame for object detection.
-            label (int | None): If label is not None, than write label to detection dict.
-                Defaults to None.
+            label (int | None): If label is not None, than write label to detection
+                dictionary. Defaults to None.
 
         Returns:
-            List[Dict[str, Union[int, float]]]: A list of detected objects, each object is
-                a dictionary containing coordinates ('x_min', 'y_min', 'x_max', 'y_max'),
+            List[Dict[str, Union[int, float]]]: A list of detected objects, each object
+                is a dict containing coordinates ('x_min', 'y_min', 'x_max', 'y_max'),
                 confidence score, and detected object class_id. Also dictionary contains
                 label if label is not None.
         """
@@ -95,7 +95,7 @@ class ObjectDetector:
             detections (List[Dict[str, Union[int, float]]]): List with dictionaries
                 containing detection information with keys 'x_min', 'y_min', 'x_max',
                 'y_max', 'confidence' and 'class_id' for one frame.
-            polygon (List[List[int]]): List of [x, y] coordinates representing the polygon.
+            polygon (List[List[int]]): List of [x, y] coordinates representing polygon.
 
         Returns:
             List[Dict[str, Union[int, float]]]: List with dictionaries containing
@@ -156,8 +156,9 @@ class ObjectDetector:
 
         Returns:
             Dict[str, Dict[str, List[Dict[str, Union[int, float]]]]]: Dictionary with
-                n_frame as key and list of dictionaries as value. Each value list containe
-                dictionaries with information about detections and intersections metrics.
+                n_frame as key and list of dictionaries as value. Each value list
+                containe dictionaries with information about detections and
+                intersections metrics.
         """
         # Label each frame
         frames_with_labels = video_manager.label_frames()
@@ -210,7 +211,7 @@ class ObjectDetector:
             intersections with a polygon.
 
         Args:
-            video_list (List[str] | None): List of videos to process. If None, then use 
+            video_list (List[str] | None): List of videos to process. If None, then use
             all videos.
             intervals_data_path (str): Path to intevals annotation.
             polygons_data_path (str): Path to polygons annotation.
@@ -237,9 +238,13 @@ class ObjectDetector:
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Detect objects on videos")
-    parser.add_argument("--video_to_val", default=None, help="Name of video to validate")
     parser.add_argument(
-        "--path_to_resources", default="resources", help="Path to the resources directory"
+        "--video_to_val", default=None, help="Name of video to validate"
+    )
+    parser.add_argument(
+        "--path_to_resources",
+        default="resources",
+        help="Path to the resources directory",
     )
 
     # Collect arguments
@@ -267,7 +272,7 @@ if __name__ == "__main__":
     )
 
     # Save detection results to JSON
-    output = os.path.join(path_to_resources, f'detections_dict.json')
+    output = os.path.join(path_to_resources, "detections_dict.json")
     with open(output, "w") as file:
         json.dump(detections, file)
 
@@ -279,6 +284,8 @@ if __name__ == "__main__":
             video_dir_path=video_dir_path,
         )
         # Save detection results to JSON
-        output_val = os.path.join(path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json")
+        output_val = os.path.join(
+            path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json"
+        )
         with open(output_val, "w") as file:
             json.dump(detections_val, file)

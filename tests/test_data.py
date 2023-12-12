@@ -3,9 +3,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from object_detection_task.data.preprocess_video import (
-    AnnotationManager,
-)
+from object_detection_task.data.preprocess_video import AnnotationManager
 
 
 @pytest.mark.parametrize("mode", ["polygons", "intervals"])

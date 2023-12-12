@@ -4,12 +4,7 @@ import os
 from typing import Dict, List, Tuple, Union
 
 import numpy as np
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    precision_score,
-    recall_score,
-)
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from tqdm import tqdm
 
 
@@ -123,7 +118,8 @@ def predict_vehicle_in_video(
 def calculate_metrics(
     actual_labels: List[int], predicted_labels: List[int]
 ) -> Dict[str, float]:
-    """Calculate F1-score, Recall, Accuracy, Precision, based on actual and predicted labels.
+    """Calculate F1-score, Recall, Accuracy, Precision, based on actual and predicted
+        labels.
 
     Args:
         actual_labels (List[int]): The actual labels for each frame in the video.
@@ -215,7 +211,7 @@ def find_threshold(
     global_threshold_metrics = calculate_global_metrics(filtered_detections_data)
 
     max_f1_score = 0.0
-    best_threshold_key = (-1., -1.)
+    best_threshold_key = (-1.0, -1.0)
 
     # Iterate through global metrics to find the best threshold based on max F1-score
     for threshold_key, video_metrics in tqdm(global_threshold_metrics.items()):
@@ -223,16 +219,20 @@ def find_threshold(
         if f1 > max_f1_score:  # Update if a higher F1-score is found
             max_f1_score = f1
             best_threshold_key = threshold_key
-    print(f'Best thresholds, intersection {best_threshold_key[0]}, confidence {best_threshold_key[1]}, best f1 {max_f1_score}')
+    print(
+        f"Best thresholds, intersection {best_threshold_key[0]}, "
+        f"confidence {best_threshold_key[1]}, "
+        f"best f1 {max_f1_score}"
+    )
     return best_threshold_key, max_f1_score
 
 
 def validate_one_video(
-        detections_val_path: str,
-        vehicle_class_ids: List[int] =  [0, 1, 2, 3, 4, 5, 7, 28],
-        intersection_threshold: float = 0.25,
-        confidence_threshold: float = 0.3,
-    ) -> Dict[str, float]:
+    detections_val_path: str,
+    vehicle_class_ids: List[int] = [0, 1, 2, 3, 4, 5, 7, 28],
+    intersection_threshold: float = 0.25,
+    confidence_threshold: float = 0.3,
+) -> Dict[str, float]:
     """Validates one video and calculates metrics
 
     Args:
@@ -244,17 +244,14 @@ def validate_one_video(
         confidence_threshold (float, optional): Minimum confidence level to consider a
             detection reliable. Defaults to 0.3
     Returns:
-        Dict[str, float]: _description_
+        Dict[str, float]: Return dictionary with metrics.
     """
     # read validation data
     # Reading the detection data
     with open(detections_val_path, "r") as file:
         detections_data = json.load(file)
     # filter vehicles
-    filtered_detections_data = filter_vehicles(
-        detections_data,
-        vehicle_class_ids
-    )
+    filtered_detections_data = filter_vehicles(detections_data, vehicle_class_ids)
     video_data = list(filtered_detections_data.values())[0]
     # predict vehicles in video
     predictions = predict_vehicle_in_video(
@@ -266,21 +263,24 @@ def validate_one_video(
     actual_labels = []
     predicted_labels = []
     for frame, predict_label in predictions.items():
-        actual_labels.append(video_data[frame]['label'])
+        actual_labels.append(video_data[frame]["label"])
         predicted_labels.append(predict_label)
-    
+
     metrics = calculate_metrics(
-        actual_labels,
+        actual_labels,  # type: ignore
         predicted_labels,
     )
 
     return metrics
 
+
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Process videos.")
     parser.add_argument(
-        "--path_to_resources", default="resources", help="Path to the resources directory"
+        "--path_to_resources",
+        default="resources",
+        help="Path to the resources directory",
     )
     parser.add_argument(
         "--video_to_val", default=None, help="Video name, which was used for validation"
@@ -303,9 +303,11 @@ if __name__ == "__main__":
     # Save detection results to JSON
     with open(threshold_json_path, "w") as file:
         json.dump(threshold_dict_to_save, file)
-    
+
     if video_to_val is not None:
-        detection_dict_val_path = os.path.join(path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json")
+        detection_dict_val_path = os.path.join(
+            path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json"
+        )
         validation_metrics = validate_one_video(
             detections_val_path=detection_dict_val_path,
             intersection_threshold=thresholds_result[0][0],

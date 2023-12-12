@@ -52,10 +52,23 @@ class AnnotationManager:
                 labels[i] = 1
         return labels
 
-    def data(self):
+    def data(self) -> Dict[str, List[List[int]]]:
+        """Returns annotations dictionary.
+
+        Returns:
+            Dict[str, List[List[int]]]: Annotations dictionary.
+        """
         return self.annotations
 
-    def __call__(self, video_name: str):
+    def __call__(self, video_name: str) -> List[List[int]]:
+        """Return annotation for video_name.
+
+        Args:
+            video_name (str): Name of video.
+
+        Returns:
+            List[List[int]]: Annotation for video_name.
+        """
         return self.annotations[video_name]
 
 
@@ -73,7 +86,7 @@ class VideoDataManager:
             self.intervals_manager = AnnotationManager(intervals_path, "intervals")
             self.intervals = self.intervals_manager(self.video_name)
         else:
-            self.intervals = None
+            self.intervals = None  # type: ignore
 
         self.polygons_manager = AnnotationManager(polygons_path, "polygons")
         self.polygon = self.polygons_manager(self.video_name)
@@ -178,10 +191,10 @@ class VideoDataManager:
             n_frame (int): Number of frame from which polygon will be cropped.
             same_size (bool, optional): Whether to return the cropped region with
                 the same dimensions as the original frame. Defaults to False.
-            bg_color_id (Tuple[int, int, int], optional): Which color will be on background.
-                Defaults to (0, 0, 0).
-            min_square (bool, optional): If True - return cropped frame in minimal square.
-                Defaults to False.
+            bg_color_id (Tuple[int, int, int], optional): Which color will be on
+                background. Defaults to (0, 0, 0).
+            min_square (bool, optional): If True - return cropped frame in minimal
+                square. Defaults to False.
             up (int, optional): Padding on top. Defaults to 50.
             down (int, optional): Padding at bottom. Defaults to 50.
             right (int, optional): Padding on right. Defaults to 50.
@@ -244,7 +257,7 @@ class VideoDataManager:
                         label = 1  # Car is present
                         break
             else:
-                label = -1
+                label = -1  # type: ignore
             self.labeled_frames.append((frame, label))
         return self.labeled_frames
 
