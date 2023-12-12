@@ -58,10 +58,10 @@ def make_intervals(predictions: Dict[str, int]) -> List[List[int]]:
     sorted_keys = sorted(predictions.keys(), key=lambda x: int(x))
 
     for frame in sorted_keys:
-        if predictions[str(frame)] == 1 and start_frame is None:
+        if predictions[frame] == 1 and start_frame is None:
             # Start of a new interval
             start_frame = int(frame)
-        elif predictions[str(frame)] == 0 and start_frame is not None:
+        elif predictions[frame] == 0 and start_frame is not None:
             # End of the current interval
             intervals.append([start_frame, int(frame) - 1])
             start_frame = None

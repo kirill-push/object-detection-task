@@ -109,7 +109,7 @@ def predict_vehicle_in_video(
     """
     predictions = {}
     for frame_number, frame_data in video_data.items():
-        predictions[frame_number] = predict_vehicle_presence_sorted(
+        predictions[str(frame_number)] = predict_vehicle_presence_sorted(
             frame_data, intersection_threshold, confidence_threshold
         )
     return predictions
