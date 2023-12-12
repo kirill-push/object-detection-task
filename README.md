@@ -8,12 +8,12 @@ Sure, here's a sample instruction guide for starting a project using Poetry:
 
 1. First, clone the project repository from its source. This can usually be done using a command like:
    ```
-   git clone [repository-url]
+   git clone https://github.com/kirill-push/object-detection-task.git
    ```
 
 2. After cloning, navigate into the project directory:
    ```
-   cd [project-name]
+   cd object_detection_task
    ```
 
 ## Step 2: Install Poetry
