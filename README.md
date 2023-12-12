@@ -1,6 +1,12 @@
-Sure, here's a sample instruction guide for starting a project using Poetry:
 
 ---
+
+# Table of Contents
+1. [Activate Poetry Environment](#activate-poetry-environment)
+2. [Running the detect_objects.py Script](#running-the-detect_objectspy-script)
+3. [Output of detect_objects.py](#output-of-detect_objectspy)
+4. [Running the evaluate_baseline.py Script](#running-the-evaluate_baselinepy-script)
+5. [Output of evaluate_baseline.py](#output-of-evaluate_baselinepy)
 
 # Getting Started with Project
 
@@ -55,7 +61,44 @@ With Poetry installed, you can now install the project's dependencies.
 
    This should display your Python version, which should be 3.8 or higher.
 
+# Baseline
+## Running the evaluate_baseline.py
 
+1. **Activate Poetry Environment**: Ensure you are in the Poetry-managed virtual environment by running:
+   ```
+   poetry shell
+   ```
+
+2. **Running the Script**: The `evaluate_baseline.py` script in the `baseline` directory accepts the following arguments:
+
+   - `-v` or `--video_to_val`: One video name or list of video names to validate.
+   - `-d` or `--path_to_video_dir`: Path to the directory with all videos. Default is `"resources/videos"`.
+   - `-i` or `--file_path_intervals`: Path to intervals annotation. Default is `"resources/time_intervals.json"`.
+   - `-p` or `--file_path_polygons`: Path to polygons annotation. Default is `"resources/polygons.json"`.
+   - `-r` or `--path_to_resources`: Path to the resources directory.
+
+   To run the script, use a command in the following format:
+   ```
+   python baseline/evaluate_baseline.py [-v video_1.mp4 video_2.mp4 ...] [-d path/to/video/dir] [-i path/to/intervals.json] [-p path/to/polygons.json] [-r path/to/resources]
+   ```
+
+   Example:
+   ```
+   python baseline/evaluate_baseline.py -v video_1.mp4 video_2.mp4 -d resources/videos -i resources/time_intervals.json -p resources/polygons.json -r resources
+   ```
+
+   This command will run the baseline evaluation on the specified videos using the resources from the given path.
+
+3. **Output**: The script will evaluate the baseline on the videos and output the results in JSON format in the `baseline_metrics_val.json` file within the specified resources directory.
+
+### Notes:
+
+- The script will automatically exclude `video_16.mp4` and `video_17.mp4` as they are duplicates of `video_4.mp4` and `video_3.mp4`, respectively.
+- If no videos are specified for validation (`--video_to_val`), the script will process all videos except for the excluded and specified validation videos.
+- The resources directory should contain `time_intervals.json`, `polygons.json`, and a `videos` subdirectory with the video files.
+
+
+# Detector
 ## Running the detect_objects.py Script
 
 1. **Activate Poetry Environment**: Ensure you are in the Poetry-managed virtual environment by running:
