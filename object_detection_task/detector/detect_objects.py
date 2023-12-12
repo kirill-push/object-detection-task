@@ -166,7 +166,7 @@ class ObjectDetector:
         for n_frame, (_, label) in tqdm(
             enumerate(frames_with_labels),
             total=len(frames_with_labels),
-            desc="Processing frames",
+            desc=f"Processing frames from {video_manager.video_name}",
         ):
             prepared_frame = video_manager.prepare_frame_for_detector(
                 n_frame=n_frame,
@@ -237,9 +237,9 @@ class ObjectDetector:
 if __name__ == "__main__":
     # Create parser and initialize arguments
     parser = argparse.ArgumentParser(description="Detect objects on videos")
-    parser.add_argument("--val", default=None, help="The video to validate")
+    parser.add_argument("--video_to_val", default=None, help="Name of video to validate")
     parser.add_argument(
-        "--path", default="resources", help="Path to the resources directory"
+        "--path_to_resources", default="resources", help="Path to the resources directory"
     )
 
     # Collect arguments
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     video_list = [  # TODO use train_test_split
         video
         for video in AnnotationManager(polygons_data_path, "polygons").video_list
-        if video_to_val is not None and video != video_to_val
+        if video != video_to_val
     ]
     detector = ObjectDetector()
     # Process videos and detect objects
