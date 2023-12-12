@@ -10,11 +10,10 @@
 2. [Baseline](#baseline)
    - [Running the evaluate_baseline.py Script](#running-the-evaluate_baselinepy-script)
 3. [Detector](#detector)
+   - [Running the run_detector.py Script](#running-the-run_detectorpy-script)
+   - [Running the calculate_metrics.py Script](#running-the-calculate_metricspy-script)
    - [Running the detect_objects.py Script](#running-the-detect_objectspy-script)
    - [Running the train.py Script](#running-the-trainpy-script)
-   - [Running the run_detector.py Script](#running-the-run_detectorpy-script)
-4. [Metrics](#metrics)
-   - [Running the calculate_metrics.py Script](#running-the-calculate_metricspy-script)
 5. [Fixing Problems with Project Initialization](#fixing-problems-with-project-initialization)
    - [Fixing OpenCV cv2 ImportError on Linux](#fixing-opencv-cv2-importerror-on-linux)
 
@@ -110,74 +109,6 @@ With Poetry installed, you can now install the project's dependencies.
 
 
 # Detector
-## Running the detect_objects.py Script
-
-1. **Activate Poetry Environment**: Ensure you are in the Poetry-managed virtual environment by running:
-   ```
-   poetry shell
-   ```
-
-2. **Running the Script**: The `detect_objects.py` script has two primary arguments:
-
-   - `-v` or `--video_to_val`: One video name or list of video names to validate.
-   - `-r` or `--path_to_resources`: Path to the resources directory.
-
-   To run the script, use a command in the following format:
-   ```
-   python object_detection_task/detector/detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
-   ```
-
-   Example:
-   ```
-   python object_detection_task/detector/detect_objects.py -v video_1.mp4 video_2.mp4 -r resources
-   ```
-
-   This command will run the object detection on the specified videos using the resources from the given path.
-
-3. **Output**: The script will process the videos and output detection results in JSON format in the specified resources directory and save it with name detections_dict.json.
-
-### Notes:
-
-- The script will ignore `video_16.mp4` and `video_17.mp4` as they are duplicates of `video_4.mp4` and `video_3.mp4`, respectively.
-- If no videos are specified for validation (`--video_to_val`), the script will process all videos except the ignored and specified validation videos.
-- The resources directory should contain `time_intervals.json`, `polygons.json`, and a `videos` subdirectory with the video files.
-
-
-## Running the train.py Script
-
-1. **Activate Poetry Environment**: Activate the Poetry virtual environment by running:
-   ```
-   poetry shell
-   ```
-
-2. **Running the Script**: The `train.py` script accepts the following arguments:
-
-   - `-v` or `--video_to_val`: Specifies one or more video names used for validation. This is optional.
-   - `-r` or `--path_to_resources`: The path to the resources directory containing intervals and polygons JSON files. The default is `"resources"`.
-
-   To run the script, use a command in the following format:
-   ```
-   python object_detection_task/detector/train.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
-   ```
-
-   Example:
-   ```
-   python object_detection_task/detector/train.py -v video_1.mp4 video_2.mp4 -r resources
-   ```
-
-   This will start the training process using the specified videos for validation and resources from the given path.
-
-3. **Output**: The script performs the following operations:
-   - Finds the best thresholds based on the detections in `detections_dict.json`.
-   - Saves the calculated thresholds in `thresholds.json` within the resources directory.
-   - If validation videos are provided, it validates these videos using the calculated thresholds and saves the metrics in `metrics_val.json`.
-
-### Notes:
-
-- Make sure the `resources` directory contains `detections_dict.json` and `detections_dict_val.json` (if validation videos are specified).
-- The script saves the threshold values and validation metrics in JSON format in the specified resources directory.
-
-
 ## Running the run_detector.py Script
 
 1. **Activate Poetry Environment**: Activate the Poetry virtual environment by running:
@@ -246,6 +177,74 @@ With Poetry installed, you can now install the project's dependencies.
 
 - Ensure that the paths to the video, intervals JSON file, polygons JSON file, output file, and thresholds (if not using default) are correctly specified.
 - The script is designed to work with one video at a time.
+
+
+## Running the detect_objects.py Script
+
+1. **Activate Poetry Environment**: Ensure you are in the Poetry-managed virtual environment by running:
+   ```
+   poetry shell
+   ```
+
+2. **Running the Script**: The `detect_objects.py` script has two primary arguments:
+
+   - `-v` or `--video_to_val`: One video name or list of video names to validate.
+   - `-r` or `--path_to_resources`: Path to the resources directory.
+
+   To run the script, use a command in the following format:
+   ```
+   python object_detection_task/detector/detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
+   ```
+
+   Example:
+   ```
+   python object_detection_task/detector/detect_objects.py -v video_1.mp4 video_2.mp4 -r resources
+   ```
+
+   This command will run the object detection on the specified videos using the resources from the given path.
+
+3. **Output**: The script will process the videos and output detection results in JSON format in the specified resources directory and save it with name detections_dict.json.
+
+### Notes:
+
+- The script will ignore `video_16.mp4` and `video_17.mp4` as they are duplicates of `video_4.mp4` and `video_3.mp4`, respectively.
+- If no videos are specified for validation (`--video_to_val`), the script will process all videos except the ignored and specified validation videos.
+- The resources directory should contain `time_intervals.json`, `polygons.json`, and a `videos` subdirectory with the video files.
+
+
+## Running the train.py Script
+
+1. **Activate Poetry Environment**: Activate the Poetry virtual environment by running:
+   ```
+   poetry shell
+   ```
+
+2. **Running the Script**: The `train.py` script accepts the following arguments:
+
+   - `-v` or `--video_to_val`: Specifies one or more video names used for validation. This is optional.
+   - `-r` or `--path_to_resources`: The path to the resources directory containing intervals and polygons JSON files. The default is `"resources"`.
+
+   To run the script, use a command in the following format:
+   ```
+   python object_detection_task/detector/train.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
+   ```
+
+   Example:
+   ```
+   python object_detection_task/detector/train.py -v video_1.mp4 video_2.mp4 -r resources
+   ```
+
+   This will start the training process using the specified videos for validation and resources from the given path.
+
+3. **Output**: The script performs the following operations:
+   - Finds the best thresholds based on the detections in `detections_dict.json`.
+   - Saves the calculated thresholds in `thresholds.json` within the resources directory.
+   - If validation videos are provided, it validates these videos using the calculated thresholds and saves the metrics in `metrics_val.json`.
+
+### Notes:
+
+- Make sure the `resources` directory contains `detections_dict.json` and `detections_dict_val.json` (if validation videos are specified).
+- The script saves the threshold values and validation metrics in JSON format in the specified resources directory.
 
 
 ---
