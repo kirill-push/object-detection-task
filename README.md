@@ -63,29 +63,24 @@ With Poetry installed, you can now install the project's dependencies.
    poetry shell
    ```
 
-2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `detect_objects.py` script is located:
-   ```
-   cd object_detection_task/detector
-   ```
-
-3. **Running the Script**: The `detect_objects.py` script has two primary arguments:
+2. **Running the Script**: The `detect_objects.py` script has two primary arguments:
 
    - `-v` or `--video_to_val`: One video name or list of video names to validate.
    - `-r` or `--path_to_resources`: Path to the resources directory.
 
    To run the script, use a command in the following format:
    ```
-   python detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
+   python object_detection_task/detector/detect_objects.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
    ```
 
    Example:
    ```
-   python detect_objects.py -v video_1.mp4 video_2.mp4 -r resources
+   python object_detection_task/detector/detect_objects.py -v video_1.mp4 video_2.mp4 -r resources
    ```
 
    This command will run the object detection on the specified videos using the resources from the given path.
 
-4. **Output**: The script will process the videos and output detection results in JSON format in the specified resources directory and save it with name detections_dict.json.
+3. **Output**: The script will process the videos and output detection results in JSON format in the specified resources directory and save it with name detections_dict.json.
 
 ### Notes:
 
@@ -101,29 +96,24 @@ With Poetry installed, you can now install the project's dependencies.
    poetry shell
    ```
 
-2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `train.py` script is located:
-   ```
-   cd object_detection_task/detector
-   ```
-
-3. **Running the Script**: The `train.py` script accepts the following arguments:
+2. **Running the Script**: The `train.py` script accepts the following arguments:
 
    - `-v` or `--video_to_val`: Specifies one or more video names used for validation. This is optional.
    - `-r` or `--path_to_resources`: The path to the resources directory containing intervals and polygons JSON files. The default is `"resources"`.
 
    To run the script, use a command in the following format:
    ```
-   poetry run python train.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
+   python object_detection_task/detector/train.py [-v video_1.mp4 video_2.mp4 ...] [-r path/to/resources]
    ```
 
    Example:
    ```
-   poetry run python train.py -v video_1.mp4 video_2.mp4 -p resources
+   python object_detection_task/detector/train.py -v video_1.mp4 video_2.mp4 -p resources
    ```
 
    This will start the training process using the specified videos for validation and resources from the given path.
 
-4. **Output**: The script performs the following operations:
+3. **Output**: The script performs the following operations:
    - Finds the best thresholds based on the detections in `detections_dict.json`.
    - Saves the calculated thresholds in `thresholds.json` within the resources directory.
    - If validation videos are provided, it validates these videos using the calculated thresholds and saves the metrics in `metrics_val.json`.
@@ -141,12 +131,8 @@ With Poetry installed, you can now install the project's dependencies.
    poetry shell
    ```
 
-2. **Navigate to the Detector Directory**: Change to the `detector` directory where the `run_detector.py` script is located:
-   ```
-   cd object_detection_task/detector
-   ```
 
-3. **Run the Script**: The `run_detector.py` script accepts the following arguments:
+2. **Run the Script**: The `run_detector.py` script accepts the following arguments:
 
    - `-v` or `--video_path`: Path(s) to one or more videos to process. This argument is required.
    - `-p` or `--polygon_path`: Path to the JSON file containing boundaries for the videos. This argument is required.
@@ -155,17 +141,17 @@ With Poetry installed, you can now install the project's dependencies.
 
    To run the script, use a command in the following format:
    ```
-   poetry run python run_detector.py --video_path path/to/video.mp4 --polygon_path path/to/polygon.json --output_path path/to/save/results.json [--thresholds_path path/to/thresholds.json]
+   python object_detection_task/detector/run_detector.py --video_path path/to/video.mp4 --polygon_path path/to/polygon.json --output_path path/to/save/results.json [--thresholds_path path/to/thresholds.json]
    ```
 
    Example:
    ```
-   poetry run python run_detector.py -v resources/videos/video_1.mp4 resources/videos/video_2.mp4 -p resources/polygon.json -o resources/val_intervals.json
+   python object_detection_task/detector/run_detector.py -v resources/videos/video_1.mp4 resources/videos/video_2.mp4 -p resources/polygon.json -o resources/val_intervals.json
    ```
 
    This command will process the specified videos, using the given polygon boundaries and thresholds, and save the predicted intervals in the specified output JSON file.
 
-4. **Output**: The script will predict the labels for each video and save the intervals in the specified output file.
+3. **Output**: The script will predict the labels for each video and save the intervals in the specified output file.
 
 ### Notes:
 
@@ -181,12 +167,7 @@ With Poetry installed, you can now install the project's dependencies.
    poetry shell
    ```
 
-2. **Navigate to the Metrics Directory**: Change to the `metrics` directory where the `calculate_metrics.py` script is located:
-   ```
-   cd object_detection_task/metrics
-   ```
-
-3. **Run the Script**: The `calculate_metrics.py` script requires several arguments:
+2. **Run the Script**: The `calculate_metrics.py` script requires several arguments:
 
    - `-v` or `--video_path`: Path to the video file for which you want to calculate metrics.
    - `-i` or `--intervals_path`: Path to the JSON file containing intervals for the video.
@@ -196,17 +177,17 @@ With Poetry installed, you can now install the project's dependencies.
 
    To run the script, use a command in the following format:
    ```
-   poetry run python calculate_metrics.py -v path/to/video.mp4 -i path/to/intervals.json -p path/to/polygons.json -o path/to/output.json [-t path/to/thresholds.json]
+   python object_detection_task/metrics/calculate_metrics.py -v path/to/video.mp4 -i path/to/intervals.json -p path/to/polygons.json -o path/to/output.json [-t path/to/thresholds.json]
    ```
 
    Example:
    ```
-   poetry run python calculate_metrics.py -v resources/videos/video.mp4 -i resources/time_intervals.json -p resources/polygons.json -o resources/metrics_val.json
+   python object_detection_task/metrics/calculate_metrics.py -v resources/videos/video.mp4 -i resources/time_intervals.json -p resources/polygons.json -o resources/metrics_val.json
    ```
 
    This command will calculate the metrics for the specified video using the provided intervals and polygons, and then save the results in the specified output file.
 
-4. **Output**: The script will generate metrics for the video and save them in the specified output file.
+3. **Output**: The script will generate metrics for the video and save them in the specified output file.
 
 ### Notes:
 
