@@ -267,5 +267,18 @@ if __name__ == "__main__":
     )
 
     # Save detection results to JSON
-    with open("resources/detections_dict.json", "w") as file:
+    output = os.path.join(path_to_resources, f'detections_dict.json')
+    with open(output, "w") as file:
         json.dump(detections, file)
+
+    if video_to_val is not None:
+        detections_val = detector.process_all_video(
+            video_list=[video_to_val],
+            intervals_data_path=intervals_data_path,
+            polygons_data_path=polygons_data_path,
+            video_dir_path=video_dir_path,
+        )
+        # Save detection results to JSON
+        output_val = os.path.join(path_to_resources, f"detections_dict_{video_to_val.split('.')[0]}.json")
+        with open(output_val, "w") as file:
+            json.dump(detections_val, file)
