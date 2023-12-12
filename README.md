@@ -248,8 +248,6 @@ With Poetry installed, you can now install the project's dependencies.
 - The script is designed to work with one video at a time.
 
 
-Certainly! Below is a concise and clear README instruction in English to address the issue with the `cv2` module in your GitHub repository. You can add this to your README file:
-
 ---
 
 # Fixing problems with project initialization
