@@ -98,14 +98,20 @@ if __name__ == "__main__":
     polygon_path = args.polygon_path
     output_path = args.output_path
     thresholds_path = args.thresholds_path
-    video_manager = VideoDataManager(video_path, None, polygon_path)
 
-    intervals = make_intervals(
-        predict(
-            video_manager=video_manager,
-            thresholds_path=thresholds_path,
+    if isinstance(video_path, str):
+        video_path = [video_path]
+    intervals = {}
+    for one_video_path in video_path:
+        video_manager = VideoDataManager(one_video_path, None, polygon_path)
+        video_name = video_manager.video_name
+        one_video_intervals = make_intervals(
+            predict(
+                video_manager=video_manager,
+                thresholds_path=thresholds_path,
+            )
         )
-    )
+        intervals[video_name] = one_video_intervals
 
     # Save intervals to JSON
     with open(output_path, "w") as file:
