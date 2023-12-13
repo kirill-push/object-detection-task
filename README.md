@@ -1,5 +1,11 @@
 
 ---
+# Script run_detector.sh
+You can execute [run_detector.sh](run_detector.sh) with custom paths to video, polygon and output.
+Polygon file should contain dictionary: {video_name: [[..., ...], polygon_coordinates]}.
+```
+   ./run_detector.sh video_path polygon_path output_path
+```
 
 # Table of Contents
 1. [Activate Poetry Environment](#activate-poetry-environment)
@@ -272,6 +278,25 @@ This indicates that the necessary OpenGL libraries are missing from your environ
 
    ```bash
    sudo apt-get install libgl1
+   ```
+
+
+## Resolving `ModuleNotFoundError: No module named 'pkg_resources'` in Python
+
+If you encounter the following error in Python:
+
+```
+ModuleNotFoundError: No module named 'pkg_resources'
+```
+
+This error typically occurs due to the absence of `setuptools` or an outdated version in your environment. Follow these steps to resolve the issue:
+
+### Installing or Updating `setuptools`:
+
+1. **Install `setuptools`**: If you don't have `setuptools` installed, you can install it using `pip`. It's also a good idea to upgrade it to the latest version.
+
+   ```
+   pip install --upgrade setuptools
    ```
 
 ---
