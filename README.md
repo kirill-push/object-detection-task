@@ -1,4 +1,4 @@
-
+[![Linting](https://github.com/kirill-push/object-detection-task/actions/workflows/lint.yml/badge.svg)](https://github.com/kirill-push/object-detection-task/actions/workflows/lint.yml)
 ---
 # Important information
 ## Script run_detector.sh
