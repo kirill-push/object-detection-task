@@ -5,7 +5,7 @@
 ### a. Final Results on Test and Training Sets
 
 - **Overall Results:** 
-  [Object Detector Model](#object-detector-+-Threshold-bruteforce-for-Intersection-with-Polygon:)
+  [Object Detector Model](#object-detector-and-Threshold-bruteforce-for-Intersection-with-Polygon:)
   - **F1 Score:** 0.759
   - **Recall:** 0.961
   - **Precision:** 0.628
@@ -57,7 +57,7 @@ python object_detection_task/metrics/calculate_metrics.py -v resources/videos/vi
 
 #### **Baseline (Brightness Variance):**
 Explored as a baseline approach. Frames cropped closer to the size of the polygon are converted into brightness variances. Then, for each video, results are normalized to the standard average and a threshold is chosen that maximizes the F1 metric. This approach was chosen for its simplicity and quick implementation, but it was less effective than the detector algorithm.
-#### **Object Detector + Threshold bruteforce for Intersection with Polygon:**
+#### **Object Detector and Threshold bruteforce for Intersection with Polygon:**
 Using a pre-trained detector, objects are found in each frame. Then, the relative areas of intersection of each object's bounding box with the polygon are calculated. Thresholds for the relative area and the detector's confidence in the found object are then selected. Thresholds are chosen based on the maximum F1 metric. YOLOv5 was chosen as the detector for its simplicity and high efficiency.
 
 ### c. Github repository with python code which process video
