@@ -5,10 +5,13 @@
 ### a. Final Results on Test and Training Sets
 
 - **Overall Results:** 
+
   [Object Detector Model](#object-detector-and-Threshold-bruteforce-for-Intersection-with-Polygon:)
+  
   - **F1 Score:** 0.759
   - **Recall:** 0.961
   - **Precision:** 0.628
+
   [Detector Metrics file](resources/detector_metrics_test.json)
 
 - **Individual Video Results:**
@@ -17,10 +20,13 @@
 - **Test File Selection:** Simple video with constant objects on the site (video 7), simple video with changing objects on the site (video 5), video with changing objects in the area of the polygon, but also with constant objects at the edges of the polygon (video 3). Videos 16 and 17 were also removed from training because they duplicate videos 3 and 4.
 
 - **Baseline Method Results:**
+
   [Baseline model](#Baseline-(Brightness-Variance):)
+
   - **F1 Score:** 0.616
   - **Recall:** 0.690
   - **Precision:** 0.557
+
   [Baseline Metrics file](resources/baseline_metrics_test.json)
 
 ### Results Interpretation
