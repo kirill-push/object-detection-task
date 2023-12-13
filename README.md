@@ -45,7 +45,7 @@ This repository offers a baseline solution with [Pixel Brightness variance Analy
 
 2. After cloning, navigate into the project directory:
    ```
-   cd object_detection_task
+   cd object-detection-task
    ```
 
 ## Step 2: Install Poetry
