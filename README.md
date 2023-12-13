@@ -2,7 +2,7 @@
 ---
 # Script run_detector.sh
 You can execute [run_detector.sh](run_detector.sh) with custom paths to video, polygon and output.
-Polygon file should contain dictionary: {video_name: [[..., ...], polygon_coordinates]}.
+Polygon file should contain dictionary the same as original `polygons.json` file.
 ```
    ./run_detector.sh video_path polygon_path output_path
 ```
