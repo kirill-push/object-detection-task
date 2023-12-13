@@ -43,7 +43,7 @@
 **i. Metrics Used and Reasons for Choice**
 
 - **Recall:** This metric was chosen because it shows how well the algorithm detects Class 1 objects. The lower the Recall, the greater the risk of not detecting a vehicle in the polygon area (higher False Negative), which can lead to an accident.
-- **Precision:** Needed to reduce False Positive errors. Low precision leads to false alarms, causing, for example, dispatcher dissatisfaction or unnecessary checks.
+- **Precision:** Needed to reduce False Positive errors. Low precision leads to false alarms, causing, for example, ground operator dissatisfaction or unnecessary checks.
 - **F1 Score:** Used to balance between Recall and Precision, especially important in data imbalance conditions.
 - **Accuracy:** Not used due to data imbalance.
 
