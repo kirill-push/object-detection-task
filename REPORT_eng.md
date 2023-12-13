@@ -62,7 +62,7 @@ python object_detection_task/metrics/calculate_metrics.py -v resources/videos/vi
 ### b. Technology Choices for Solution
 
 #### **Baseline (Brightness Variance):**
-Explored as a baseline approach. Frames cropped closer to the size of the polygon are converted into brightness variances. Then, for each video, results are normalized to the standard average and a threshold is chosen that maximizes the F1 metric. This approach was chosen for its simplicity and quick implementation, but it was less effective than the detector algorithm.
+Pixel Brightness Variance is explored as a baseline approach. Frames cropped closer to the size of the polygon are converted into brightness variances. Then, for each video, results are normalized to the standard average and a threshold is chosen that maximizes the F1 metric. This approach was chosen for its simplicity and quick implementation, but it was less effective than the detector algorithm.
 #### **Object Detector and Threshold bruteforce for Intersection with Polygon:**
 Using a pre-trained detector, objects are found in each frame. Then, the relative areas of intersection of each object's bounding box with the polygon are calculated. Thresholds for the relative area and the detector's confidence in the found object are then selected. Thresholds are chosen based on the maximum F1 metric. YOLOv5 was chosen as the detector for its simplicity and high efficiency.
 
