@@ -12,14 +12,15 @@ You can find Work Analysis Report in [English](REPORT_eng.md) and [Russian](REPO
 
 
 # Table of Contents
-1. [Activate Poetry Environment](#activate-poetry-environment)
+1. [Brief task description](#Brief-task-description)
+2. [Activate Poetry Environment](#activate-poetry-environment)
    - [Step 1: Clone the Repository](#step-1-clone-the-repository)
    - [Step 2: Install Poetry](#step-2-install-poetry)
    - [Step 3: Install Dependencies Using Poetry](#step-3-install-dependencies-using-poetry)
    - [Step 4: Verify Your Setup](#step-4-verify-your-setup)
-2. [Baseline](#baseline)
+3. [Baseline](#baseline)
    - [Running the evaluate_baseline.py Script](#running-the-evaluate_baselinepy-script)
-3. [Detector](#detector)
+4. [Detector](#detector)
    - [Running the run_detector.py Script](#running-the-run_detectorpy-script)
    - [Running the calculate_metrics.py Script](#running-the-calculate_metricspy-script)
    - [Running the detect_objects.py Script](#running-the-detect_objectspy-script)
@@ -27,6 +28,11 @@ You can find Work Analysis Report in [English](REPORT_eng.md) and [Russian](REPO
 5. [Fixing Problems with Project Initialization](#fixing-problems-with-project-initialization)
    - [Fixing OpenCV cv2 ImportError on Linux](#fixing-opencv-cv2-importerror-on-linux)
 
+
+# Brief task description
+Fixed cameras have been installed to monitor the area where the aircraft is preparing for departure. The task is to make sure that there are no vehicles on the stand before the aircraft arrives. If any vehicles are found inside the booth boundary, the ground operator should be notified.
+
+This repository offers a baseline solution with [Pixel Brightness variance Analysis](#baseline), as well as a solution with [Object Detection and the selection of treshold](#detector).
 
 # Activate Poetry Environment
 
@@ -135,7 +141,7 @@ With Poetry installed, you can now install the project's dependencies.
 
    To run the script, use a command in the following format:
    ```
-   python object_detection_task/detector/run_detector.py --video_path path/to/video.mp4 --polygon_path path/to/polygon.json --output_path path/to/save/results.json [--thresholds_path path/to/thresholds.json]
+   python object_detection_task/detector/run_detector.py -v path/to/video.mp4 -p path/to/polygon.json -o path/to/save/results.json [-t path/to/thresholds.json]
    ```
 
    Example:
