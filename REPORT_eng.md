@@ -6,7 +6,7 @@
 
 - **Overall Results:** 
 
-  [Object Detector Model](#object-detector-and-Threshold-bruteforce-for-Intersection-with-Polygon:)
+  [Object Detector Model](#b.-Technology-Choices-for-Solution)
   
   - **F1 Score:** 0.759
   - **Recall:** 0.961
@@ -21,7 +21,7 @@
 
 - **Baseline Method Results:**
 
-  [Baseline model](#Baseline-(Brightness-Variance):)
+  [Baseline model](#b.-Technology-Choices-for-Solution)
 
   - **F1 Score:** 0.616
   - **Recall:** 0.690
@@ -34,7 +34,7 @@
 1. **Overall Results:** 
    - A high **Recall** (0.961) indicates that the algorithm finds objects of the first class well. However, moderate **Precision** (0.628) indicates a significant number of false positives. **F1 Score** (0.759), balancing Recall and Precision, is also good, but not perfect due to these trade-offs.
 
-2. **Comparison with Baseline Method:** 
+2. **Comparison with [Baseline Method](#b.-Technology-Choices-for-Solution):** 
    - The detector algorithm outperforms the baseline method in all metrics, especially in higher **Recall** and **F1 Score**.
 
 3. **Need to know:**
