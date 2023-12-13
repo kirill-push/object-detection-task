@@ -28,11 +28,11 @@ lint-isort: ## run isort in linting mode
 
 .PHONY: lint-flake8
 lint-flake8: ## run flake8 (code linter)
-	@flake8 .
+	@flake8 ./object_detection_task
 
 .PHONY: lint-mypy
 lint-mypy: ## run mypy (static-type checker)
-	@mypy --config-file pyproject.toml .
+	@mypy --config-file pyproject.toml ./object_detection_task
 
 .PHONY: lint-mypy-report
 lint-mypy-report: ## run mypy & create report

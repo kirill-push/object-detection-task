@@ -78,6 +78,9 @@ exclude = [
     '.coverage',
     'htmlcov',
     '.ipynb_checkpoints',
+    'resources',
+    'requirements.txt',
+    'run_detector.sh',
 ]
 
 [tool.pytest.ini_options]
