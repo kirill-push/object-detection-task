@@ -1,11 +1,15 @@
 
 ---
-# Script run_detector.sh
+## Script run_detector.sh
 You can execute [run_detector.sh](run_detector.sh) with custom paths to video, polygon and output.
 Polygon file should contain dictionary the same as original `polygons.json` file.
 ```
    ./run_detector.sh video_path polygon_path output_path
 ```
+
+## Work Analysis Report
+You can find Work Analysis Report in [English](REPORT_eng.md) and [Russian](REPORT_ru.md).
+
 
 # Table of Contents
 1. [Activate Poetry Environment](#activate-poetry-environment)
