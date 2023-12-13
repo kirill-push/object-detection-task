@@ -142,8 +142,6 @@ resources/*
 !resources/test_intervals.json
 !resources/detector_metrics_test.json
 !resources/baseline_metrics_test.json
-!resources/time_intervals.json
-!resources/polygons.json
 !resources/videos/video_5.mp4
 notebooks/
 yolov5x6.pt
