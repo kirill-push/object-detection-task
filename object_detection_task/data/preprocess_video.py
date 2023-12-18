@@ -354,7 +354,7 @@ class VideoDataManager:
         """
         if crop:
             polygon = self.recalculate_polygon_coordinates()
-            frame = self.crop_polygon_from_frame(n_frame)
+            frame = self.prepare_frame_for_detector(n_frame)
         else:
             polygon = self.polygon
             frame = self.frames[n_frame]
