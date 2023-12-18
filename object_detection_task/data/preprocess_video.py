@@ -74,7 +74,10 @@ class AnnotationManager:
 
 class VideoDataManager:
     def __init__(
-        self, video_path: str, intervals_path: Optional[str], polygons_path: str
+        self,
+        video_path: str,
+        intervals_path: Optional[str]='../resources/time_intervals.json',
+        polygons_path: str = '../resources/polygons.json'
     ):
         self.video_path = video_path
         self.video_dir_path = os.path.dirname(video_path)
