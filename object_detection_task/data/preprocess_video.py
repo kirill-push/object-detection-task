@@ -76,8 +76,8 @@ class VideoDataManager:
     def __init__(
         self,
         video_path: str,
-        intervals_path: Optional[str]='../resources/time_intervals.json',
-        polygons_path: str = '../resources/polygons.json'
+        intervals_path: Optional[str] = "../resources/time_intervals.json",
+        polygons_path: str = "../resources/polygons.json",
     ):
         self.video_path = video_path
         self.video_dir_path = os.path.dirname(video_path)
@@ -323,7 +323,7 @@ class VideoDataManager:
         inplace: bool = False,
         color: Tuple[int, int, int] = (0, 255, 0),
         thickness: int = 2,
-        bbox: Optional[List[int]] = None,
+        bbox: Optional[List[List[int]]] = None,
         bbox_color: Tuple[int, int, int] = (0, 0, 255),
         bbox_thickness: int = 2,
     ) -> np.ndarray:
@@ -340,8 +340,9 @@ class VideoDataManager:
                 Defaults to (0, 255, 0) (green).
             thickness (int): The thickness of the polygon lines.
                 Defaults to 2.
-            bbox (List[int] | None): If bbox is not None, then draw it.
+            bbox (List[List[int]] | None): If bbox is not None, then draw.
                 Coordinates of bbox = [x_min, y_min, x_max, y_max].
+                Can be one box or many boxes.
                 Defaults to None.
             bbox_color (Tuple[int, int, int]): Color of the bounding box in BGR format.
                 Defaults to (0, 0, 255) (red).
@@ -366,10 +367,14 @@ class VideoDataManager:
 
         # Draw the bbox if provided
         if bbox is not None:
-            x_min, y_min, x_max, y_max = bbox
-            cv2.rectangle(
-                new_frame, (x_min, y_min), (x_max, y_max), bbox_color, bbox_thickness
-            )
+            for x_min, y_min, x_max, y_max in bbox:
+                cv2.rectangle(
+                    new_frame,
+                    (x_min, y_min),
+                    (x_max, y_max),
+                    bbox_color,
+                    bbox_thickness,
+                )
         if inplace:
             self.frames[n_frame] = new_frame
         return new_frame
