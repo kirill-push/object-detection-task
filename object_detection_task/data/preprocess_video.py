@@ -326,6 +326,7 @@ class VideoDataManager:
         bbox: Optional[List[List[int]]] = None,
         bbox_color: Tuple[int, int, int] = (0, 0, 255),
         bbox_thickness: int = 2,
+        class_ids: Optional[Dict[int, str]] = None,
     ) -> np.ndarray:
         """
         Draws a polygon on the given frame.
@@ -367,7 +368,7 @@ class VideoDataManager:
 
         # Draw the bbox if provided
         if bbox is not None:
-            for x_min, y_min, x_max, y_max in bbox:
+            for x_min, y_min, x_max, y_max, class_id, confidence in bbox:
                 cv2.rectangle(
                     new_frame,
                     (x_min, y_min),
@@ -375,6 +376,30 @@ class VideoDataManager:
                     bbox_color,
                     bbox_thickness,
                 )
+                if class_ids:
+                    class_name = class_ids[class_id]
+                    text_in_box = f'{class_name}: {confidence}'
+                    (w, _), _ = cv2.getTextSize(text_in_box, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+                    if y_min > 10:
+                        pt1 = (x_min, y_min - 20)
+                        pt2 = (x_min + w, y_min)
+                        org = (x_min, y_min - 5) 
+                    else:
+                        pt1 = (x_min, y_max)
+                        pt2 = (x_min + w, y_max + 20)
+                        org = (x_min, y_max + 15)
+                    cv2.rectangle(new_frame, pt1, pt2, bbox_color, -1)
+                    cv2.putText(
+                        new_frame,
+                        text_in_box,
+                        org,
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (255, 255, 255),
+                        1,
+                        cv2.LINE_AA
+                    )
+                    
         if inplace:
             self.frames[n_frame] = new_frame
         return new_frame
